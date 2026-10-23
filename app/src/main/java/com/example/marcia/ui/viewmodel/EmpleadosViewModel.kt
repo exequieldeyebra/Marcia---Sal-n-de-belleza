@@ -6,6 +6,7 @@ import com.example.marcia.data.Empleado
 
 class EmpleadosViewModel : ViewModel() {
 
+    // leer el libro
     val listadoEmpleados = mutableStateListOf<Empleado>()
 
     init {

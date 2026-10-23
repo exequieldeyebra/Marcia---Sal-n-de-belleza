@@ -1,4 +1,4 @@
-package com.example.marcia.ui.screen
+package com.example.marcia.ui.screen.Empleados
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marcia.data.Empleado
 import com.example.marcia.ui.viewmodel.EmpleadosViewModel
+
 
 @Composable
 fun EmpleadosScreen(
@@ -59,7 +60,8 @@ fun MetricCard(title: String, value: String, subtitle: String, modifier: Modifie
 fun EmpleadoCardItem(empleado: Empleado) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        onClick = {}
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
