@@ -10,7 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.loginbasico.ui.ViewModel.LoginViewModel
-import com.example.marcia.ui.navigation.MarciaAppNavigation
+//import com.example.marcia.ui.navigation.MarciaAppNavigation
+import com.example.marcia.ui.navigation.MarciaSalonApp
 import com.example.marcia.ui.theme.MarciaSalonDeBellezaTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,15 +19,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MarciaSalonDeBellezaTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    var loginViewModel: LoginViewModel = viewModel()
-                    MarciaAppNavigation(loginViewModel)
-                }
+            MarciaSalonDeBellezaTheme() {
+                MarciaSalonApp()
             }
+
+//
+//            MarciaSalonDeBellezaTheme {
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    val loginViewModel: LoginViewModel = viewModel()
+//                    //MarciaAppNavigation()
+//
+//                }
+//            }
         }
     }
 }
