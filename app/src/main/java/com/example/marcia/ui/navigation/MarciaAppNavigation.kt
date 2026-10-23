@@ -15,6 +15,7 @@ import com.example.marcia.ui.screen.EmpleadosScreen
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
+import com.example.marcia.ui.viewmodel.EmpleadosViewModel
 
 @Composable
 fun MarciaAppNavigation(login : LoginViewModel) {
@@ -39,6 +40,7 @@ fun MarciaAppNavigation(login : LoginViewModel) {
 
 @Composable
 fun MainDashboardScreen() {
+
     val bottomNavController = rememberNavController()
     val items = listOf("turnos", "servicios", "empleados", "finanzas")
 
@@ -82,7 +84,7 @@ fun MainDashboardScreen() {
         ) {
             composable("turnos") { TurnosScreen() }
             composable("servicios") { ServiciosScreen() }
-            composable("empleados") { EmpleadosScreen() }
+            composable("empleados") { EmpleadosScreen(EmpleadosViewModel()) }
             composable("finanzas") { FinanzasScreen() }
         }
     }
