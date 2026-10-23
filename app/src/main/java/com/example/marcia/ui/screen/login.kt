@@ -1,3 +1,5 @@
+package com.example.marcia.ui.screen
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,7 +19,7 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLoginSuccess: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Marcia Estética", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+        Text("Marcia Salón de Belleza", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.height(8.dp))
         Text("Panel de Administración", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
@@ -25,8 +27,13 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLoginSuccess: () -> Unit) {
 
         OutlinedTextField(
             value = loginViewModel.email,
-            onValueChange = { loginViewModel.email = it },
+            onValueChange = {
+                loginViewModel.email = it
+                loginViewModel.clearError()
+            },
             label = { Text("Correo electrónico") },
+            isError = loginViewModel.errorMessage.isNotEmpty(),
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -34,19 +41,32 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLoginSuccess: () -> Unit) {
 
         OutlinedTextField(
             value = loginViewModel.password,
-            onValueChange = { loginViewModel.password = it },
+            onValueChange = {
+                loginViewModel.password = it
+                loginViewModel.clearError()
+            },
             label = { Text("Contraseña") },
             visualTransformation = PasswordVisualTransformation(),
+            isError = loginViewModel.errorMessage.isNotEmpty(),
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
+
+        if (loginViewModel.errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = loginViewModel.errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             onClick = {
-                if( loginViewModel.validateLogin()){
-                    onLoginSuccess()
-                }
+                if (loginViewModel.validateLogin()) {
+                    onLoginSuccess() }
             },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

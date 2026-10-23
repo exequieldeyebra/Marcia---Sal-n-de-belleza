@@ -1,6 +1,6 @@
 package com.example.marcia.ui.navigation
 
-import LoginScreen
+import com.example.marcia.ui.screen.LoginScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
