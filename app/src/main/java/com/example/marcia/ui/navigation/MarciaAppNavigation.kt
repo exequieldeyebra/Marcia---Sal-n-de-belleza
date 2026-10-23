@@ -10,18 +10,20 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.example.loginbasico.ui.ViewModel.LoginViewModel
 import com.example.marcia.ui.screen.EmpleadosScreen
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
 
 @Composable
-fun MarciaAppNavigation() {
+fun MarciaAppNavigation(login : LoginViewModel) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
             LoginScreen(
+                loginViewModel = login,
                 onLoginSuccess = {
                     navController.navigate("dashboard") {
                         popUpTo("login") { inclusive = true }
