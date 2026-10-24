@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.loginbasico.ui.ViewModel.LoginViewModel
 import com.example.marcia.ui.screen.Empleados.EmpleadosScreen
+import com.example.marcia.ui.screen.Empleados.registrarEmpleado
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
@@ -90,7 +91,7 @@ fun MarciaSalonApp(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = LoginRoute,
+            startDestination = EmpleadosRoute,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -123,13 +124,20 @@ fun MarciaSalonApp(
             }
 
             // Tab 3: Empleados
-//            composable<EmpleadosRoute> {
-//                EmpleadosScreen(
+            composable<EmpleadosRoute> {
+                EmpleadosScreen(
 //                    onNavigateToEmployeeDetail = { employeeId ->
 //                        navController.navigate(DetalleEmpleadoRoute(employeeId = employeeId))
 //                    }
-//                )
-//            }
+                    onNavigateToEmpleadoRegistro = {
+                        navController.navigate(RegistroEmpleadoRoute)
+                    }
+                )
+            }
+
+            composable<RegistroEmpleadoRoute> {
+                registrarEmpleado()
+            }
 
             // Tab 4: Finanzas
             composable<FinanzasRoute> {

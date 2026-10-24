@@ -27,6 +27,8 @@ data object ServiciosRoute : ScreenRoute
 
 @Serializable
 data object EmpleadosRoute : ScreenRoute
+@Serializable
+data object RegistroEmpleadoRoute: ScreenRoute
 
 @Serializable
 data object FinanzasRoute : ScreenRoute
@@ -43,6 +45,8 @@ data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
 
 @Serializable
 data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
+
+
 
 /**
  * Representation of top-level destinations shown in the bottom navigation bar.
