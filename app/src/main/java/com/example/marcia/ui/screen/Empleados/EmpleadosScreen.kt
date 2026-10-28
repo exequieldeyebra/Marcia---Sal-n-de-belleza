@@ -1,14 +1,14 @@
 package com.example.marcia.ui.screen.Empleados
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -17,13 +17,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marcia.data.Empleado
 import com.example.marcia.ui.viewmodel.EmpleadosViewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun EmpleadosScreen(
     empleadosViewModel: EmpleadosViewModel = viewModel(),
-    onNavigateToEmpleadoRegistro: () -> Unit
 ) {
     val empleadosLista = empleadosViewModel.listadoEmpleados
+    var mostrarModalRegistro by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -57,11 +58,19 @@ fun EmpleadosScreen(
         }
 
         BotonFlotanteAgregarEmpleado(
-            onClick = onNavigateToEmpleadoRegistro,
+            onClick = { mostrarModalRegistro = true },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
         )
+
+        if (mostrarModalRegistro) {
+            ModalBottomSheet(
+                onDismissRequest = { mostrarModalRegistro = false }
+            ) {
+                RegistrarEmpleado()
+            }
+        }
     }
 }
 

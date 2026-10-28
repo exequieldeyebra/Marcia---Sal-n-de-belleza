@@ -1,4 +1,5 @@
 package com.example.marcia.ui.navigation
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Badge
@@ -9,11 +10,13 @@ import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+
 /**
- * Type-safe serializable navigation routes for Jetpack Compose Navigation (Compose Navigation 2.8+ type-safe API).
+ * Type-safe serializable navigation routes for Jetpack Compose Navigation 3.
  */
-sealed interface ScreenRoute
+sealed interface ScreenRoute : NavKey
 
 @Serializable
 data object LoginRoute : ScreenRoute
@@ -27,8 +30,9 @@ data object ServiciosRoute : ScreenRoute
 
 @Serializable
 data object EmpleadosRoute : ScreenRoute
+
 @Serializable
-data object RegistroEmpleadoRoute: ScreenRoute
+data object RegistroEmpleadoRoute : ScreenRoute
 
 @Serializable
 data object FinanzasRoute : ScreenRoute
@@ -46,13 +50,11 @@ data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
 @Serializable
 data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
 
-
-
 /**
  * Representation of top-level destinations shown in the bottom navigation bar.
  */
 data class TopLevelDestination(
-    val route: ScreenRoute,
+    val route: NavKey,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val label: String,
