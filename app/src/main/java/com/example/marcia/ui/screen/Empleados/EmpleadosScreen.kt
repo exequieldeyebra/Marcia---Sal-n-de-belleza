@@ -11,11 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marcia.data.Empleado
 import com.example.marcia.ui.viewmodel.EmpleadosViewModel
+import com.example.marcia.ui.screen.Empleados.RegistrarEmpleado
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableState")
@@ -66,9 +68,14 @@ fun EmpleadosScreen(
 
         if (mostrarModalRegistro) {
             ModalBottomSheet(
-                onDismissRequest = { mostrarModalRegistro = false }
+                onDismissRequest = { mostrarModalRegistro = false },
+                containerColor = MaterialTheme.colorScheme.surface, // Fondo blanco/crema
+                scrimColor = Color.Black.copy(alpha = 0.4f), // Oscurece la pantalla de fondo simulando el blur[cite: 21]
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp) // Bordes superiores redondeados[cite: 21]
             ) {
-                RegistrarEmpleado()
+                RegistrarEmpleado(
+                    onDismiss = { mostrarModalRegistro = false }
+                )
             }
         }
     }
