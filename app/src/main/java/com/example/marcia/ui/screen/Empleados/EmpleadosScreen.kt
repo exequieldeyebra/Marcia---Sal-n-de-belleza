@@ -111,12 +111,15 @@ fun MetricCard(title: String, value: String, subtitle: String, modifier: Modifie
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmpleadoCardItem(empleado: Empleado) {
+    var mostrarModalDetalle = mutableStateOf(false)
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        onClick = {}
+        onClick = {mostrarModalDetalle.value = true}
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -138,5 +141,23 @@ fun EmpleadoCardItem(empleado: Empleado) {
                 Text("⭐ ${empleado.rating}", style = MaterialTheme.typography.labelMedium)
             }
         }
+
+
+
+        if (mostrarModalDetalle.value) {
+            ModalBottomSheet(
+                onDismissRequest = { mostrarModalDetalle.value = false },
+                containerColor = MaterialTheme.colorScheme.surface, // Fondo blanco/crema
+                scrimColor = Color.Black.copy(alpha = 0.4f), // Oscurece la pantalla de fondo simulando el blur[cite: 21]
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp) // Bordes superiores redondeados[cite: 21]
+            ) {
+                DetalleEmpleado(
+                    onDismiss = { mostrarModalDetalle.value = false },
+                    empleado
+                )
+            }
+        }
     }
+
+
 }

@@ -152,8 +152,8 @@ fun RegistrarEmpleado(onDismiss: () -> Unit = {}) { // <-- Parámetro agregado c
 // Componente reutilizable para los campos de texto con el estilo de la imagen[cite: 21]
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomFormField(label: String, placeholder: String, modifier: Modifier = Modifier) {
-    var text by remember { mutableStateOf("") }
+fun CustomFormField(label: String, placeholder: String, input : String = "",modifier: Modifier = Modifier) {
+    var text by remember { mutableStateOf(input) }
 
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
