@@ -1,6 +1,5 @@
 package com.example.marcia.ui.navigation
 
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -13,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,58 +20,43 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.example.loginbasico.ui.ViewModel.LoginViewModel
 import com.example.marcia.ui.screen.Empleados.EmpleadosScreen
+
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
-//import com.example.marcia.ui.screen.TurnosScreen
-//import com.example.ui.screens.DetalleEmpleadoScreen
-//import com.example.ui.screens.DetalleServicioScreen
-//import com.example.ui.screens.DetalleTurnoScreen
-//import com.example.ui.screens.EmpleadosScreen
-//import com.example.ui.screens.FinanzasScreen
-//import com.example.ui.screens.NuevoTurnoScreen
-//import com.example.ui.screens.ServiciosScreen
-//import com.example.ui.screens.TurnosScreen
-//import com.example.ui.theme.PlumPrimary
-//import com.example.ui.theme.PlumPrimaryContainer
-//import com.example.ui.theme.RoseSecondary
-//import com.example.ui.theme.RoseSecondaryFixed
+import com.example.marcia.ui.screen.TurnosScreen
 
 @Composable
 fun MarciaSalonApp(
-    navController: NavHostController = rememberNavController()
+    backStack: NavBackStack<NavKey> = rememberNavBackStack(EmpleadosRoute)
 ) {
     val loginViewModel: LoginViewModel = viewModel()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val currentDestination = backStack.lastOrNull()
 
     // Check if current route is one of the top level destinations
     val showBottomBar by remember(currentDestination) {
         derivedStateOf {
             TOP_LEVEL_DESTINATIONS.any { topLevel ->
-                currentDestination?.hasRoute(topLevel.route::class) == true
+                topLevel.route == currentDestination
             }
         }
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 10.dp),
         contentWindowInsets = WindowInsets.navigationBars,
         bottomBar = {
             AnimatedVisibility(
@@ -82,112 +65,98 @@ fun MarciaSalonApp(
                 exit = slideOutVertically(targetOffsetY = { it })
             ) {
                 MarciaBottomNavBar(
-                    navController = navController,
+                    backStack = backStack,
                     currentDestination = currentDestination
                 )
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = LoginRoute,
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            composable <LoginRoute>{
-                LoginScreen(loginViewModel, onLoginSuccess = {navController.navigate(ServiciosRoute)}) }
-            // Tab 1: Turnos (Agenda)
-//            composable<TurnosRoute> {
-//                TurnosScreen(
-//                    onNavigateToTurnoDetail = { appointmentId ->
-//                        navController.navigate(DetalleTurnoRoute(appointmentId = appointmentId))
-//                    },
-//                    onNavigateToNuevoTurno = {
-//                        navController.navigate(NuevoTurnoRoute)
-//                    }
-//                )
-//            }
+                .padding(innerPadding),
+            entryProvider = entryProvider {
+                entry<LoginRoute> {
+                    LoginScreen(
+                        loginViewModel = loginViewModel,
+                        onLoginSuccess = {
+                            backStack.clear()
+                            backStack.add(ServiciosRoute)
+                        }
+                    )
+                }
 
-            // Tab 2: Servicios
-            composable<ServiciosRoute> {
-                ServiciosScreen(
+                // Tab 1: Turnos (Agenda)
+                entry<TurnosRoute> {
+                    TurnosScreen(
+//                        onNavigateToTurnoDetail = { appointmentId ->
+//                            backStack.add(DetalleTurnoRoute(appointmentId = appointmentId))
+//                        },
+//                        onNavigateToNuevoTurno = {
+//                            backStack.add(NuevoTurnoRoute)
+//                        }
+                    )
+                }
 
-//                    onNavigateToServiceDetail = { serviceId ->
-//                        navController.navigate(DetalleServicioRoute(serviceId = serviceId))
-//                    },
-//                    onNavigateToNuevoTurno = {
-//                        navController.navigate(NuevoTurnoRoute)
-//                    }
-                )
+                // Tab 2: Servicios
+                entry<ServiciosRoute> {
+                    ServiciosScreen(
+//                        onNavigateToServiceDetail = { serviceId ->
+//                            backStack.add(DetalleServicioRoute(serviceId = serviceId))
+//                        },
+//                        onNavigateToNuevoTurno = {
+//                            backStack.add(NuevoTurnoRoute)
+//                        }
+                    )
+                }
+
+                // Tab 3: Empleados
+                entry<EmpleadosRoute> {
+                    EmpleadosScreen(
+                    )
+                }
+
+                // Tab 4: Finanzas
+                entry<FinanzasRoute> {
+                    FinanzasScreen()
+                }
+
+                // Sub-Screens
+//                entry<DetalleTurnoRoute> { key ->
+//                    DetalleTurnoScreen(
+//                        appointmentId = key.appointmentId,
+//                        onNavigateBack = { backStack.removeLastOrNull() }
+//                    )
+//                }
+//                entry<NuevoTurnoRoute> {
+//                    NuevoTurnoScreen(
+//                        onNavigateBack = { backStack.removeLastOrNull() }
+//                    )
+//                }
+//                entry<DetalleServicioRoute> { key ->
+//                    DetalleServicioScreen(
+//                        serviceId = key.serviceId,
+//                        onNavigateBack = { backStack.removeLastOrNull() },
+//                        onNavigateToNuevoTurno = { backStack.add(NuevoTurnoRoute) }
+//                    )
+//                }
+//                entry<DetalleEmpleadoRoute> { key ->
+//                    DetalleEmpleadoScreen(
+//                        employeeId = key.employeeId,
+//                        onNavigateBack = { backStack.removeLastOrNull() }
+//                    )
+//                }
             }
-
-            // Tab 3: Empleados
-//            composable<EmpleadosRoute> {
-//                EmpleadosScreen(
-//                    onNavigateToEmployeeDetail = { employeeId ->
-//                        navController.navigate(DetalleEmpleadoRoute(employeeId = employeeId))
-//                    }
-//                )
-//            }
-
-            // Tab 4: Finanzas
-            composable<FinanzasRoute> {
-                FinanzasScreen()
-            }
-
-//            // Sub-Screen: Detalle de Turno (Ficha Clínica & Sesión)
-//            composable<DetalleTurnoRoute> { backStackEntry ->
-//                val route = backStackEntry.toRoute<DetalleTurnoRoute>()
-//                DetalleTurnoScreen(
-//                    appointmentId = route.appointmentId,
-//                    onNavigateBack = {
-//                        navController.popBackStack()
-//                    }
-//                )
-//            }
-//
-//            // Sub-Screen: Nuevo Turno
-//            composable<NuevoTurnoRoute> {
-//                NuevoTurnoScreen(
-//                    onNavigateBack = {
-//                        navController.popBackStack()
-//                    }
-//                )
-//            }
-//
-//            // Sub-Screen: Detalle de Servicio
-//            composable<DetalleServicioRoute> { backStackEntry ->
-//                val route = backStackEntry.toRoute<DetalleServicioRoute>()
-//                DetalleServicioScreen(
-//                    serviceId = route.serviceId,
-//                    onNavigateBack = {
-//                        navController.popBackStack()
-//                    },
-//                    onNavigateToNuevoTurno = {
-//                        navController.navigate(NuevoTurnoRoute)
-//                    }
-//                )
-//            }
-//
-//            // Sub-Screen: Detalle de Empleado
-//            composable<DetalleEmpleadoRoute> { backStackEntry ->
-//                val route = backStackEntry.toRoute<DetalleEmpleadoRoute>()
-//                DetalleEmpleadoScreen(
-//                    employeeId = route.employeeId,
-//                    onNavigateBack = {
-//                        navController.popBackStack()
-//                    }
-//                )
-//            }
-        }
+        )
     }
 }
 
 @Composable
 fun MarciaBottomNavBar(
-    navController: NavHostController,
-    currentDestination: androidx.navigation.NavDestination?
+    backStack: NavBackStack<NavKey>,
+    currentDestination: NavKey?
 ) {
     NavigationBar(
         modifier = Modifier
@@ -197,21 +166,14 @@ fun MarciaBottomNavBar(
         tonalElevation = 8.dp
     ) {
         TOP_LEVEL_DESTINATIONS.forEach { destination ->
-            val isSelected = currentDestination?.hierarchy?.any {
-                it.hasRoute(destination.route::class)
-            } == true
+            val isSelected = currentDestination == destination.route
 
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
                     if (!isSelected) {
-                        navController.navigate(destination.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        backStack.clear()
+                        backStack.add(destination.route)
                     }
                 },
                 icon = {
@@ -227,13 +189,6 @@ fun MarciaBottomNavBar(
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     )
                 },
-//                colors = NavigationBarItemDefaults.colors(
-//                    selectedIconColor = RoseSecondaryFixed,
-//                    selectedTextColor = PlumPrimary,
-//                    indicatorColor = PlumPrimaryContainer,
-//                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-//                ),
                 modifier = Modifier.testTag(destination.testTag)
             )
         }
