@@ -35,6 +35,7 @@ import com.example.marcia.ui.screen.Empleados.EmpleadosScreen
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
+import com.example.marcia.ui.screen.TurnosScreen
 
 @Composable
 fun MarciaSalonApp(
@@ -53,7 +54,9 @@ fun MarciaSalonApp(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 10.dp),
         contentWindowInsets = WindowInsets.navigationBars,
         bottomBar = {
             AnimatedVisibility(
@@ -86,16 +89,16 @@ fun MarciaSalonApp(
                 }
 
                 // Tab 1: Turnos (Agenda)
-//                entry<TurnosRoute> {
-//                    TurnosScreen(
+                entry<TurnosRoute> {
+                    TurnosScreen(
 //                        onNavigateToTurnoDetail = { appointmentId ->
 //                            backStack.add(DetalleTurnoRoute(appointmentId = appointmentId))
 //                        },
 //                        onNavigateToNuevoTurno = {
 //                            backStack.add(NuevoTurnoRoute)
 //                        }
-//                    )
-//                }
+                    )
+                }
 
                 // Tab 2: Servicios
                 entry<ServiciosRoute> {
