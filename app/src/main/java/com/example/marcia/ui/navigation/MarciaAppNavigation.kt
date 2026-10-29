@@ -56,7 +56,7 @@ fun MarciaSalonApp(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 10.dp),
+            .padding(top = 20.dp),
         contentWindowInsets = WindowInsets.navigationBars,
         bottomBar = {
             AnimatedVisibility(
