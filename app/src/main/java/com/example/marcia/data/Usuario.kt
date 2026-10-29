@@ -1,10 +1,15 @@
 package com.example.marcia.data
 
-class Usuario (
-    val id: Int,
-    var nome: String,
-    var email: String,
-    var password: String
+data class Usuario (
+    val id: Int = 0,
+    var nome: String = "",
+    var apellido: String = "",
+    var email: String = "",
+    var tel : String = "",
+    var dni : String = "",
+    var password: String = "",
+
+
 ){
 
     override fun toString(): String {

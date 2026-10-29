@@ -1,9 +1,9 @@
 package com.example.marcia.data
 
 data class Empleado(
-    var name: String,
-
-    var role: String,
-    var shifts: String,
-    var rating: String
+    var id : Int = 0,
+    var UsuarioId : Usuario = Usuario(),
+    var role: String = "",
+    var shifts: String = "",
+    var rating: String = ""
 )

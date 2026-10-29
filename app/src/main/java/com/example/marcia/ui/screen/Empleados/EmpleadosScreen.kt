@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marcia.data.Empleado
 import com.example.marcia.ui.viewmodel.EmpleadosViewModel
-import com.example.marcia.ui.screen.Empleados.RegistrarEmpleado
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableState")
@@ -27,6 +27,7 @@ fun EmpleadosScreen(
 ) {
     val empleadosLista = empleadosViewModel.listadoEmpleados
     var mostrarModalRegistro by remember { mutableStateOf(false) }
+    var empleadoParaEditar by remember { mutableStateOf<Empleado?>(null) }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -50,7 +51,13 @@ fun EmpleadosScreen(
             }
 
             items(empleadosLista) { empleado ->
-                EmpleadoCardItem(empleado)
+                EmpleadoCardItem(
+                    empleado = empleado,
+                    onClick = {
+                        empleadosViewModel.seleccionarEmpleadoParaEdicion(empleado)
+                        empleadoParaEditar = empleado
+                    }
+                )
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
@@ -60,21 +67,65 @@ fun EmpleadosScreen(
         }
 
         BotonFlotanteAgregarEmpleado(
-            onClick = { mostrarModalRegistro = true },
+            onClick = {
+                empleadosViewModel.prepararNuevoRegistro()
+                mostrarModalRegistro = true
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
         )
 
+        // Modal de Registro
         if (mostrarModalRegistro) {
             ModalBottomSheet(
                 onDismissRequest = { mostrarModalRegistro = false },
-                containerColor = MaterialTheme.colorScheme.surface, // Fondo blanco/crema
-                scrimColor = Color.Black.copy(alpha = 0.4f), // Oscurece la pantalla de fondo simulando el blur[cite: 21]
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp) // Bordes superiores redondeados[cite: 21]
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
             ) {
-                RegistrarEmpleado(
+                val state by empleadosViewModel.state.collectAsStateWithLifecycle()
+                val stateUsuario by empleadosViewModel.stateUsuario.collectAsStateWithLifecycle()
+
+                RegistrarEmpleadoContent(
+                    usuarioState = stateUsuario,
+                    empleadoState = state,
+                    onNombreChange = empleadosViewModel::onNombreChange,
+                    onApellidoChange = empleadosViewModel::onApellidoChange,
+                    onDniChange = empleadosViewModel::onDniChange,
+                    onRolChange = empleadosViewModel::onRolChange,
+                    onConfirmar = {
+                        empleadosViewModel.agregarEmpleado()
+                        mostrarModalRegistro = false
+                    },
                     onDismiss = { mostrarModalRegistro = false }
+                )
+            }
+        }
+
+        // Modal de Detalle / Edición
+        if (empleadoParaEditar != null) {
+            ModalBottomSheet(
+                onDismissRequest = { empleadoParaEditar = null },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val state by empleadosViewModel.state.collectAsStateWithLifecycle()
+                val stateUsuario by empleadosViewModel.stateUsuario.collectAsStateWithLifecycle()
+
+                DetalleEmpleadoContent(
+                    usuarioState = stateUsuario,
+                    empleadoState = state,
+                    onNombreChange = empleadosViewModel::onNombreChange,
+                    onApellidoChange = empleadosViewModel::onApellidoChange,
+                    onDniChange = empleadosViewModel::onDniChange,
+                    onRolChange = empleadosViewModel::onRolChange,
+                    onConfirmar = {
+                        empleadosViewModel.guardarEdicionEmpleado()
+                        empleadoParaEditar = null
+                    },
+                    onDismiss = { empleadoParaEditar = null }
                 )
             }
         }
@@ -111,19 +162,19 @@ fun MetricCard(title: String, value: String, subtitle: String, modifier: Modifie
     }
 }
 
-@SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmpleadoCardItem(empleado: Empleado) {
-    var mostrarModalDetalle = mutableStateOf(false)
+fun EmpleadoCardItem(
+    empleado: Empleado,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        onClick = {mostrarModalDetalle.value = true}
+        onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                empleado.name,
+                "${empleado.UsuarioId.nome} ${empleado.UsuarioId.apellido}",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -141,23 +192,5 @@ fun EmpleadoCardItem(empleado: Empleado) {
                 Text("⭐ ${empleado.rating}", style = MaterialTheme.typography.labelMedium)
             }
         }
-
-
-
-        if (mostrarModalDetalle.value) {
-            ModalBottomSheet(
-                onDismissRequest = { mostrarModalDetalle.value = false },
-                containerColor = MaterialTheme.colorScheme.surface, // Fondo blanco/crema
-                scrimColor = Color.Black.copy(alpha = 0.4f), // Oscurece la pantalla de fondo simulando el blur[cite: 21]
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp) // Bordes superiores redondeados[cite: 21]
-            ) {
-                DetalleEmpleado(
-                    onDismiss = { mostrarModalDetalle.value = false },
-                    empleado
-                )
-            }
-        }
     }
-
-
 }
