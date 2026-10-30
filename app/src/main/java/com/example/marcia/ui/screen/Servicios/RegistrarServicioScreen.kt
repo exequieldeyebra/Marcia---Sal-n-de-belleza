@@ -12,29 +12,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.marcia.data.Servicio
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun RegistrarServicioScreen(onDismiss: () -> Unit = {}) {
-    var nombre by remember { mutableStateOf("") }
-    var precio by remember { mutableStateOf("") }
-    var beneficios by remember { mutableStateOf("") }
-
-    // Mock states for dropdowns and checkboxes
+fun FormularioServicioContent(
+    servicioState: Servicio,
+    tituloPanel: String,
+    iconoPanel: ImageVector? = null,
+    onNombreChange: (String) -> Unit,
+    onPrecioChange: (String) -> Unit,
+    onDuracionChange: (String) -> Unit,
+    onCategoriaChange: (String) -> Unit,
+    onDescripcionChange: (String) -> Unit,
+    onConfirmar: () -> Unit,
+    onDismiss: () -> Unit
+) {
     var expandedDuracion by remember { mutableStateOf(false) }
-    var duracionSeleccionada by remember { mutableStateOf("60 minutos") }
-
     var expandedCategoria by remember { mutableStateOf(false) }
-    var categoriaSeleccionada by remember { mutableStateOf("Faciales") }
-
-    var checkElena by remember { mutableStateOf(true) }
-    var checkMariana by remember { mutableStateOf(false) }
-    var checkCamila by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -42,7 +43,7 @@ fun RegistrarServicioScreen(onDismiss: () -> Unit = {}) {
             .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Encabezado del Modal[cite: 23]
+        // Encabezado
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -52,169 +53,126 @@ fun RegistrarServicioScreen(onDismiss: () -> Unit = {}) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Icono circular[cite: 23]
                 Box(
                     modifier = Modifier
                         .size(40.dp)
                         .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("🌸", fontSize = 18.sp) // Puedes reemplazarlo por el icono SVG correspondiente
+                    if (iconoPanel != null) {
+                        Icon(iconoPanel, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(20.dp))
+                    } else {
+                        Text("🌸", fontSize = 18.sp)
+                    }
                 }
                 Text(
-                    text = "Añadir Nuevo Servicio",
+                    text = tituloPanel,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
                 )
             }
             IconButton(onClick = onDismiss) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Cerrar",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Icon(Icons.Default.Close, contentDescription = "Cerrar", tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
         HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
 
-        // Nombre del tratamiento[cite: 23]
         CustomFormField(
             label = "NOMBRE DEL TRATAMIENTO",
-            placeholder = "Ej: Ritual Corporal Relajante Botánico",
-            value = nombre,
-            onValueChange = { nombre = it },
+            placeholder = "Ej: Ritual Corporal Relajante",
+            value = servicioState.nombre,
+            onValueChange = onNombreChange,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Fila: Precio y Duración[cite: 23]
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
             CustomFormField(
                 label = "PRECIO (ARS)",
                 placeholder = "25000",
-                value = precio,
-                onValueChange = { precio = it },
+                value = servicioState.precio,
+                onValueChange = onPrecioChange,
                 leadingIcon = { Text("$", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), //forzar teclado numérico
                 modifier = Modifier.weight(1f)
             )
 
-            // Dropdown Duración (Simplificado para vista visual)[cite: 23]
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = "DURACIÓN (MIN)",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("DURACIÓN (MIN)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
                 ExposedDropdownMenuBox(expanded = expandedDuracion, onExpandedChange = { expandedDuracion = !expandedDuracion }) {
                     TextField(
-                        value = duracionSeleccionada,
+                        value = servicioState.duracion,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDuracion) },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        colors = TextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
+                            focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
                         ),
                         shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.menuAnchor()
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
                     )
+                    ExposedDropdownMenu(expanded = expandedDuracion, onDismissRequest = { expandedDuracion = false }) {
+                        listOf("30 minutos", "45 minutos", "60 minutos", "90 minutos").forEach { opcion ->
+                            DropdownMenuItem(text = { Text(opcion) }, onClick = { onDuracionChange(opcion); expandedDuracion = false })
+                        }
+                    }
                 }
             }
         }
 
-        // Categoría[cite: 23]
         Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                text = "CATEGORÍA",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Bold
-            )
+            Text("CATEGORÍA", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
             ExposedDropdownMenuBox(expanded = expandedCategoria, onExpandedChange = { expandedCategoria = !expandedCategoria }) {
                 TextField(
-                    value = categoriaSeleccionada,
+                    value = servicioState.categoria,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCategoria) },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                         unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
                     ),
                     shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
                 )
+                ExposedDropdownMenu(expanded = expandedCategoria, onDismissRequest = { expandedCategoria = false }) {
+                    listOf("Faciales", "Corporales", "Masajes").forEach { opcion ->
+                        DropdownMenuItem(text = { Text(opcion) }, onClick = { onCategoriaChange(opcion); expandedCategoria = false })
+                    }
+                }
             }
         }
 
-        // Beneficios / Descripción[cite: 23]
         CustomFormField(
             label = "BENEFICIOS / DESCRIPCIÓN",
-            placeholder = "Resumen de técnicas, activos e impacto del tratamiento...",
-            value = beneficios,
-            onValueChange = { beneficios = it },
+            placeholder = "Resumen de técnicas...",
+            value = servicioState.descripcion,
+            onValueChange = onDescripcionChange,
             singleLine = false,
             minLines = 3,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Especialistas Certificados[cite: 23]
-        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                text = "ESPECIALISTAS CERTIFICADOS",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Bold
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
-                    .padding(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    CustomCheckbox(checked = checkElena, onCheckedChange = { checkElena = it }, label = "Dra. Elena Silva")
-                    CustomCheckbox(checked = checkMariana, onCheckedChange = { checkMariana = it }, label = "Mariana Ruiz")
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Botón Guardar
         Button(
-            onClick = { onDismiss() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
+            onClick = onConfirmar,
+            modifier = Modifier.fillMaxWidth().height(52.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {
-            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(8.dp))
             Text("Confirmar y Guardar", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
 
-// Componente reutilizable ajustado para el campo de texto[cite: 23]
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CustomFormField(
+fun CustomFormField(
     label: String,
     placeholder: String,
     value: String,
@@ -222,15 +180,11 @@ private fun CustomFormField(
     modifier: Modifier = Modifier,
     leadingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
-    minLines: Int = 1
+    minLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = FontWeight.Bold
-        )
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
         TextField(
             value = value,
             onValueChange = onValueChange,
@@ -238,6 +192,7 @@ private fun CustomFormField(
             singleLine = singleLine,
             minLines = minLines,
             leadingIcon = leadingIcon,
+            keyboardOptions = keyboardOptions, // Se aplica aquí
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.colors(
@@ -246,27 +201,6 @@ private fun CustomFormField(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             )
-        )
-    }
-}
-
-// Componente para Checkbox con texto al lado[cite: 23]
-@Composable
-private fun CustomCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, label: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 4.dp)
-    ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Medium
         )
     }
 }
