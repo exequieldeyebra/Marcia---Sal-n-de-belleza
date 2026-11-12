@@ -35,8 +35,6 @@ import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
-import com.example.marcia.ui.screen.productos.DetalleProductoScreen
-import com.example.marcia.ui.screen.productos.FormularioProductoScreen
 import com.example.marcia.ui.screen.productos.ProductosAdminScreen
 import com.example.marcia.ui.viewmodel.ProductosViewModel
 
@@ -52,7 +50,7 @@ fun MarciaSalonApp(
     // ViewModel encargado de la sesión y validación de acceso
     val loginViewModel: LoginViewModel = viewModel()
 
-    // ViewModel único y compartido para gestionar el estado del ABML de productos
+    // ViewModel único y compartido para gestionar el estado reactivo del ABML de productos
     val productosViewModel: ProductosViewModel = viewModel()
 
     // Obtenemos la pantalla actual en el tope de la pila de navegación
@@ -130,59 +128,11 @@ fun MarciaSalonApp(
                 // MÓDULO DE ADMINISTRACIÓN DE PRODUCTOS (ABML) 📦
                 // ========================================================
 
-                // 1. LISTADO Y BAJA: Pantalla principal del inventario
+                // Pantalla principal de inventario: gestiona internamente el listado,
+                // los modales emergentes (ModalBottomSheet) de Alta/Edición y el diálogo de Baja.
                 entry<ProductosRoute> {
                     ProductosAdminScreen(
-                        viewModel = productosViewModel,
-                        onNuevoProductoClick = {
-                            // Navega al formulario vacío para crear un producto (ALTA)
-                            backStack.add(FormularioProductoRoute(productoId = null))
-                        },
-                        onEditarProductoClick = { productoId ->
-                            // Navega al formulario pasando el ID para editarlo (MODIFICACIÓN)
-                            backStack.add(FormularioProductoRoute(productoId = productoId))
-                        }
-                    )
-                }
-
-                // 2. FICHA TÉCNICA: Vista detallada del producto
-                entry<DetalleProductoRoute> { key ->
-                    val productoEncontrado = productosViewModel.listaProductos.find { it.id == key.productoId }
-
-                    if (productoEncontrado != null) {
-                        DetalleProductoScreen(
-                            producto = productoEncontrado,
-                            onVolverClick = { backStack.removeLastOrNull() },
-                            onEditarClick = {
-                                // Permite saltar directo a la edición desde la vista de detalle
-                                backStack.add(FormularioProductoRoute(productoId = productoEncontrado.id))
-                            }
-                        )
-                    }
-                }
-
-                // 3. ALTA Y MODIFICACIÓN: Formulario con los 4 campos requeridos
-                entry<FormularioProductoRoute> { key ->
-                    // Si viene un ID buscamos el producto en memoria; si es null queda vacío para crear
-                    val productoAEditar = key.productoId?.let { id ->
-                        productosViewModel.listaProductos.find { it.id == id }
-                    }
-
-                    FormularioProductoScreen(
-                        productoExistente = productoAEditar,
-                        onGuardarClick = { nombre, descripcion, precio, stock ->
-                            // Ejecuta el guardado en el ViewModel (crea o actualiza según corresponda)
-                            productosViewModel.guardarProducto(
-                                id = key.productoId,
-                                nombre = nombre,
-                                descripcion = descripcion,
-                                precio = precio,
-                                stock = stock
-                            )
-                            // Vuelve automáticamente al listado tras guardar
-                            backStack.removeLastOrNull()
-                        },
-                        onVolverClick = { backStack.removeLastOrNull() }
+                        viewModel = productosViewModel
                     )
                 }
 

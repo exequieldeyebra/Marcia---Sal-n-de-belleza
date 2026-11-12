@@ -8,67 +8,42 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marcia.data.Producto
 import com.example.marcia.ui.viewmodel.ProductosViewModel
 
 /**
  * Pantalla principal de administración (ABML) de productos del salón.
- * Muestra el inventario con nombre, descripción, precio y stock, permitiendo
- * dar de alta nuevos artículos, editarlos o eliminarlos.
+ * Muestra el inventario con nombre, descripción, precio y stock, gestionando
+ * el Alta, Baja y Modificación mediante modales flotantes (ModalBottomSheet).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductosAdminScreen(
-    viewModel: ProductosViewModel,
-    onNuevoProductoClick: () -> Unit,
-    onEditarProductoClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    viewModel: ProductosViewModel = viewModel()
 ) {
-    // Estado para controlar el diálogo de confirmación antes de eliminar un producto
+    // Estados locales para controlar la apertura de los modales y el diálogo de baja
+    var mostrarModalRegistro by remember { mutableStateOf(false) }
+    var productoParaEditar by remember { mutableStateOf<Producto?>(null) }
     var productoAEliminar by remember { mutableStateOf<Producto?>(null) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Gestión de Productos 📦",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-                )
-            )
-        },
-        // Botón flotante para dar de Alta un nuevo producto
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNuevoProductoClick,
-                containerColor = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Agregar nuevo producto"
-                )
-            }
-        }
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
                 .padding(16.dp)
         ) {
             // Encabezado con contador total de productos cargados
@@ -77,26 +52,17 @@ fun ProductosAdminScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Inventario del Salón",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Badge(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ) {
+                Column {
+                    Text(text = "INVENTARIO ACTIVO", style = MaterialTheme.typography.labelMedium)
                     Text(
                         text = "${viewModel.listaProductos.size} productos",
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Evaluamos si el inventario está vacío
             if (viewModel.listaProductos.isEmpty()) {
@@ -118,7 +84,7 @@ fun ProductosAdminScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "Tocá el botón + para agregar el primero",
+                            text = "Tocá el botón inferior para agregar el primero",
                             fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -129,7 +95,6 @@ fun ProductosAdminScreen(
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
-                    // Dejamos espacio abajo para que el FAB no tape las acciones del último ítem
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
                     items(
@@ -138,7 +103,10 @@ fun ProductosAdminScreen(
                     ) { producto ->
                         AdminProductoItemCard(
                             producto = producto,
-                            onEditar = { onEditarProductoClick(producto.id) },
+                            onEditar = {
+                                viewModel.seleccionarProductoParaEdicion(producto)
+                                productoParaEditar = producto
+                            },
                             onEliminar = { productoAEliminar = producto }
                         )
                     }
@@ -146,31 +114,104 @@ fun ProductosAdminScreen(
             }
         }
 
-        // Diálogo de confirmación para evitar eliminaciones accidentales
-        productoAEliminar?.let { producto ->
+        // Botón flotante extendido para dar de Alta un nuevo producto
+        ExtendedFloatingActionButton(
+            onClick = {
+                viewModel.prepararNuevoProducto()
+                mostrarModalRegistro = true
+            },
+            text = { Text("Nuevo Producto") },
+            icon = { Icon(Icons.Filled.Add, contentDescription = "Agregar producto") },
+            shape = RoundedCornerShape(16.dp),
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        )
+
+        // Modal BottomSheet para CREAR (Alta)
+        if (mostrarModalRegistro) {
+            ModalBottomSheet(
+                onDismissRequest = { mostrarModalRegistro = false },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val productoState by viewModel.productoEnEdicion.collectAsStateWithLifecycle()
+                FormularioProductoContent(
+                    productoState = productoState,
+                    tituloPanel = "Añadir Nuevo Producto",
+                    onNombreChange = viewModel::onNombreChange,
+                    onDescripcionChange = viewModel::onDescripcionChange,
+                    onPrecioChange = viewModel::onPrecioChange,
+                    onStockChange = viewModel::onStockChange,
+                    onConfirmar = {
+                        viewModel.guardarNuevoProducto()
+                        mostrarModalRegistro = false
+                    },
+                    onDismiss = { mostrarModalRegistro = false }
+                )
+            }
+        }
+
+        // Modal BottomSheet para EDITAR (Modificación)
+        if (productoParaEditar != null) {
+            ModalBottomSheet(
+                onDismissRequest = { productoParaEditar = null },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val productoState by viewModel.productoEnEdicion.collectAsStateWithLifecycle()
+                FormularioProductoContent(
+                    productoState = productoState,
+                    tituloPanel = "Modificar Producto",
+                    iconoPanel = Icons.Default.Inventory2,
+                    onNombreChange = viewModel::onNombreChange,
+                    onDescripcionChange = viewModel::onDescripcionChange,
+                    onPrecioChange = viewModel::onPrecioChange,
+                    onStockChange = viewModel::onStockChange,
+                    onConfirmar = {
+                        viewModel.guardarEdicionProducto()
+                        productoParaEditar = null
+                    },
+                    onDismiss = { productoParaEditar = null }
+                )
+            }
+        }
+
+        // Diálogo de confirmación para evitar eliminaciones accidentales (Baja)
+        if (productoAEliminar != null) {
             AlertDialog(
                 onDismissRequest = { productoAEliminar = null },
-                title = { Text(text = "Eliminar producto") },
+                containerColor = MaterialTheme.colorScheme.surface,
+                title = {
+                    Text(
+                        "Eliminar Producto",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 text = {
-                    Text(text = "¿Estás seguro de que querés eliminar \"${producto.nombre}\" del inventario?")
+                    Text(
+                        text = "¿Estás seguro de que deseas eliminar \"${productoAEliminar?.nombre}\"? Esta acción no se puede deshacer.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            viewModel.eliminarProducto(producto.id)
+                            productoAEliminar?.let { viewModel.eliminarProducto(it) }
                             productoAEliminar = null
                         }
                     ) {
-                        Text(
-                            text = "Eliminar",
-                            color = MaterialTheme.colorScheme.error,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text("Eliminar", color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { productoAEliminar = null }) {
-                        Text(text = "Cancelar")
+                        Text("Cancelar", color = MaterialTheme.colorScheme.secondary)
                     }
                 }
             )
@@ -180,7 +221,7 @@ fun ProductosAdminScreen(
 
 /**
  * Tarjeta individual moderna para cada producto en el panel de administración.
- * Muestra Nombre, Descripción, Precio, Stock y botones de Edición y Baja.
+ * Muestra Nombre, Descripción, Precio, Stock y botones rápidos de Edición y Baja.
  */
 @Composable
 fun AdminProductoItemCard(
@@ -189,12 +230,8 @@ fun AdminProductoItemCard(
     onEliminar: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -204,7 +241,7 @@ fun AdminProductoItemCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Columna izquierda con la información completa del producto
+            // Columna izquierda con toda la información del producto
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -213,7 +250,7 @@ fun AdminProductoItemCard(
                     text = producto.nombre,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Text(
@@ -233,7 +270,7 @@ fun AdminProductoItemCard(
                 ) {
                     Text(
                         text = "$ ${producto.precio}",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp
                     )
@@ -243,7 +280,6 @@ fun AdminProductoItemCard(
                         color = if (producto.stock > 3) {
                             MaterialTheme.colorScheme.surfaceVariant
                         } else {
-                            // Destacamos en rojo suave si queda poco stock
                             MaterialTheme.colorScheme.errorContainer
                         }
                     ) {
@@ -264,30 +300,26 @@ fun AdminProductoItemCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Columna derecha con los botones de acción (Editar y Eliminar)
+            // Columna derecha con los botones de acción
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                IconButton(
-                    onClick = onEditar,
-                    modifier = Modifier.size(38.dp)
-                ) {
+                IconButton(onClick = onEditar, modifier = Modifier.size(32.dp)) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Editar producto",
-                        tint = MaterialTheme.colorScheme.secondary
+                        contentDescription = "Editar",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
-                IconButton(
-                    onClick = onEliminar,
-                    modifier = Modifier.size(38.dp)
-                ) {
+                IconButton(onClick = onEliminar, modifier = Modifier.size(32.dp)) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Eliminar producto",
-                        tint = MaterialTheme.colorScheme.error
+                        contentDescription = "Eliminar",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -301,8 +333,6 @@ fun AdminProductoItemCard(
 fun ProductosAdminScreenPreview() {
     val viewModelPrueba = ProductosViewModel()
     ProductosAdminScreen(
-        viewModel = viewModelPrueba,
-        onNuevoProductoClick = {},
-        onEditarProductoClick = {}
+        viewModel = viewModelPrueba
     )
 }

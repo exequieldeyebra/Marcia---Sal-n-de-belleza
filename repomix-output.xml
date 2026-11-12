@@ -73,10 +73,9 @@ app/
                   Login/
                     login.kt
                   productos/
-                    ScreenCarrito.kt
-                    ScreenCompraConfirmada.kt
+                    FormularioProductoScreen.kt
+                    ProductosAdminScreen.kt
                     ScreenDetalleProducto.kt
-                    ScreenProductos.kt
                   Servicios/
                     RegistrarServicioScreen.kt
                     ServiciosScreen.kt
@@ -175,21 +174,6 @@ class ExampleInstrumentedTest {
         assertEquals("com.example.marcia", appContext.packageName)
     }
 }
-</file>
-
-<file path="app/src/main/java/com/example/marcia/data/Producto.kt">
-package com.example.marcia.data
-
-/**
- * Modelo de datos que representa un Producto disponible para la venta en el salón.
- */
-data class Producto(
-    val id: String,          // Identificador único del producto
-    val nombre: String,      // Nombre comercial (ej: "Shampoo reparador")
-    val precio: Double,      // Precio unitario
-    val stock: Int,          // Cantidad disponible en stock
-    val imagenResId: Int     // Referencia al recurso drawable de la imagen
-)
 </file>
 
 <file path="app/src/main/java/com/example/marcia/data/Servicio.kt">
@@ -623,696 +607,474 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLoginSuccess: () -> Unit) {
 }
 </file>
 
-<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenCarrito.kt">
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/FormularioProductoScreen.kt">
 package com.example.marcia.ui.screen.productos
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.marcia.ui.viewModel.ItemCarrito
-import com.example.marcia.ui.viewModel.ProductosViewModel
+import com.example.marcia.data.Producto
 
+/**
+ * Pantalla de formulario para el ABML de productos.
+ * Permite dar de alta un nuevo artículo o modificar uno existente gestionando
+ * cuatro campos obligatorios: nombre, descripción, precio y stock.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarritoScreen(
-    viewModel: ProductosViewModel,
-    onVolverClick: () -> Unit = {},
-    onVentaExitosa: () -> Unit = {},
+fun FormularioProductoScreen(
+    productoExistente: Producto? = null, // Si es null funciona como Alta; si trae datos, funciona como Edición
+    onGuardarClick: (nombre: String, descripcion: String, precio: Double, stock: Int) -> Unit,
+    onVolverClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Estados locales para capturar el valor de los campos de texto
+    var nombre by remember { mutableStateOf(productoExistente?.nombre ?: "") }
+    var descripcion by remember { mutableStateOf(productoExistente?.descripcion ?: "") }
+    var precioStr by remember { mutableStateOf(productoExistente?.precio?.toString() ?: "") }
+    var stockStr by remember { mutableStateOf(productoExistente?.stock?.toString() ?: "") }
+
+    // Estado para controlar y mostrar mensajes de error ante datos inválidos
+    var errorMensaje by remember { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalle de Venta y Cobro 💳") }
+                title = {
+                    Text(
+                        text = if (productoExistente == null) "Nuevo Producto 📝" else "Editar Producto ✏️",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    TextButton(onClick = onVolverClick) {
+                        Text(text = "← Volver")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                )
             )
         }
     ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()) // Permite scrollear si la pantalla es chica
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Complete los datos del inventario",
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
+            // Campo de texto para el Nombre del producto
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = { Text("Nombre del producto") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true
+            )
+
+            // Campo de texto para la Descripción detallada
+            OutlinedTextField(
+                value = descripcion,
+                onValueChange = { descripcion = it },
+                label = { Text("Descripción") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                minLines = 3,
+                maxLines = 5
+            )
+
+            // Campo de texto para el Precio (teclado numérico)
+            OutlinedTextField(
+                value = precioStr,
+                onValueChange = { precioStr = it },
+                label = { Text("Precio ($)") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true
+            )
+
+            // Campo de texto para el Stock disponible (teclado numérico)
+            OutlinedTextField(
+                value = stockStr,
+                onValueChange = { stockStr = it },
+                label = { Text("Stock disponible (unidades)") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true
+            )
+
+            // Muestra una alerta visual si algún campo obligatorio no está bien completado
+            if (errorMensaje.isNotEmpty()) {
+                Text(
+                    text = errorMensaje,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Botón principal de acción para validar y guardar los datos
+            Button(
+                onClick = {
+                    val precio = precioStr.toDoubleOrNull()
+                    val stock = stockStr.toIntOrNull()
+
+                    // Validamos que los campos no estén vacíos y que los números sean correctos
+                    if (nombre.isBlank() || precio == null || stock == null) {
+                        errorMensaje = "Por favor, complete correctamente todos los campos obligatorios."
+                    } else {
+                        errorMensaje = ""
+                        onGuardarClick(nombre.trim(), descripcion.trim(), precio, stock)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Text(
+                    text = "Guardar Producto",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ProductosAdminScreen.kt">
+package com.example.marcia.ui.screen.productos
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.marcia.data.Producto
+import com.example.marcia.ui.viewmodel.ProductosViewModel
+
+/**
+ * Pantalla principal de administración (ABML) de productos del salón.
+ * Muestra el inventario con nombre, descripción, precio y stock, permitiendo
+ * dar de alta nuevos artículos, editarlos o eliminarlos.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProductosAdminScreen(
+    viewModel: ProductosViewModel,
+    onNuevoProductoClick: () -> Unit,
+    onEditarProductoClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Estado para controlar el diálogo de confirmación antes de eliminar un producto
+    var productoAEliminar by remember { mutableStateOf<Producto?>(null) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Gestión de Productos 📦",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                )
+            )
+        },
+        // Botón flotante para dar de Alta un nuevo producto
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onNuevoProductoClick,
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Agregar nuevo producto"
+                )
+            }
+        }
+    ) { innerPadding ->
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
+            // Encabezado con contador total de productos cargados
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Inventario del Salón",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
-            // Si el carrito está vacío, mostramos un mensaje descriptivo
-            if (viewModel.carrito.isEmpty()) {
+                Badge(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ) {
+                    Text(
+                        text = "${viewModel.listaProductos.size} productos",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Evaluamos si el inventario está vacío
+            if (viewModel.listaProductos.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "El carrito está vacío 🛒",
-                        fontSize = 18.sp,
-                        color = Color.Gray
-                    )
-                } // Fin de Box vacío
-
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(text = "📦", fontSize = 48.sp)
+                        Text(
+                            text = "No hay productos cargados",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "Tocá el botón + para agregar el primero",
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             } else {
-
-                // Título del listado
-                Text(
-                    text = "Productos a cobrar",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Lista de productos agregados con sus controles de cantidad
+                // Listado de productos con espaciado prolijo
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    // Dejamos espacio abajo para que el FAB no tape las acciones del último ítem
+                    contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
-                    items(viewModel.carrito) { item ->
-                        ItemCarritoCard(
-                            item = item,
-                            onSumar = { viewModel.incrementarCantidad(item) },
-                            onRestar = { viewModel.decrementarCantidad(item) },
-                            onEliminar = { viewModel.eliminarDelCarrito(item) }
+                    items(
+                        items = viewModel.listaProductos,
+                        key = { it.id }
+                    ) { producto ->
+                        AdminProductoItemCard(
+                            producto = producto,
+                            onEditar = { onEditarProductoClick(producto.id) },
+                            onEliminar = { productoAEliminar = producto }
                         )
-                    } // Fin de items
-                } // Fin de LazyColumn
+                    }
+                }
+            }
+        }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Selección de Medio de Pago
-                Text(
-                    text = "Medio de Pago",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                // Opciones de medio de pago
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    viewModel.mediosPagoDisponibles.forEach { medio ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { viewModel.seleccionarMedioPago(medio) }
-                                .padding(vertical = 4.dp)
-                        ) {
-                            RadioButton(
-                                selected = (medio == viewModel.medioPagoSeleccionado),
-                                onClick = { viewModel.seleccionarMedioPago(medio) }
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = medio)
-                        } // Fin de Row medio de pago
-                    } // Fin de forEach
-                } // Fin de Column de medios de pago
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Resumen final de cobro
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+        // Diálogo de confirmación para evitar eliminaciones accidentales
+        productoAEliminar?.let { producto ->
+            AlertDialog(
+                onDismissRequest = { productoAEliminar = null },
+                title = { Text(text = "Eliminar producto") },
+                text = {
+                    Text(text = "¿Estás seguro de que querés eliminar \"${producto.nombre}\" del inventario?")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.eliminarProducto(producto.id)
+                            productoAEliminar = null
+                        }
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Total Final:", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                            Text(
-                                text = "$ ${viewModel.totalVenta}",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        } // Fin de Row de Total
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Botón para Confirmar Venta
-                        Button(
-                            onClick = {
-                                if (viewModel.finalizarVenta()) {
-                                    onVentaExitosa()
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(text = "Confirmar y Cobrar")
-                        } // Fin de Button Confirmar
-
-                    } // Fin de Column interna del Card
-                } // Fin de Card Resumen
-
-            } // Fin del else (carrito con items)
-
-        } // Fin de Column principal
-    } // Fin de Scaffold
-} // Fin de CarritoScreen
+                        Text(
+                            text = "Eliminar",
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { productoAEliminar = null }) {
+                        Text(text = "Cancelar")
+                    }
+                }
+            )
+        }
+    }
+}
 
 /**
- * Tarjeta individual para ajustar cantidades de un producto en el carrito.
+ * Tarjeta individual moderna para cada producto en el panel de administración.
+ * Muestra Nombre, Descripción, Precio, Stock y botones de Edición y Baja.
  */
 @Composable
-fun ItemCarritoCard(
-    item: ItemCarrito,
-    onSumar: () -> Unit,
-    onRestar: () -> Unit,
+fun AdminProductoItemCard(
+    producto: Producto,
+    onEditar: () -> Unit,
     onEliminar: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-            // Información del producto y subtotal
+            // Columna izquierda con la información completa del producto
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = item.producto.nombre,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Unitario: $ ${item.producto.precio}",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-                Text(
-                    text = "Subtotal: $ ${item.producto.precio * item.cantidad}",
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            } // Fin de Column info
-
-            // Controles de incremento / decremento
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                OutlinedButton(
-                    onClick = onRestar,
-                    contentPadding = PaddingValues(horizontal = 8.dp)
-                ) {
-                    Text("-")
-                }
-
-                Text(
-                    text = "${item.cantidad}",
+                    text = producto.nombre,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 6.dp)
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
-                OutlinedButton(
-                    onClick = onSumar,
-                    contentPadding = PaddingValues(horizontal = 8.dp)
+                Text(
+                    text = producto.descripcion.ifBlank { "Sin descripción detallada" },
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Fila con Precio y etiqueta de Stock
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("+")
+                    Text(
+                        text = "$ ${producto.precio}",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp
+                    )
+
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = if (producto.stock > 3) {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        } else {
+                            // Destacamos en rojo suave si queda poco stock
+                            MaterialTheme.colorScheme.errorContainer
+                        }
+                    ) {
+                        Text(
+                            text = "Stock: ${producto.stock} un.",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            color = if (producto.stock > 3) {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                MaterialTheme.colorScheme.onErrorContainer
+                            }
+                        )
+                    }
                 }
-            } // Fin de Row controles
+            }
 
-        } // Fin de Row principal
-    } // Fin de Card
-} // Fin de ItemCarritoCard
+            Spacer(modifier = Modifier.width(8.dp))
 
-/**
- * Vista previa para verificar el diseño en la solapa Split/Design sin compilar en emulador.
- */
+            // Columna derecha con los botones de acción (Editar y Eliminar)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                IconButton(
+                    onClick = onEditar,
+                    modifier = Modifier.size(38.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar producto",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+
+                IconButton(
+                    onClick = onEliminar,
+                    modifier = Modifier.size(38.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar producto",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Suppress("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
-fun CarritoScreenPreview() {
+fun ProductosAdminScreenPreview() {
     val viewModelPrueba = ProductosViewModel()
-    // Agregamos un producto de prueba para ver el renderizado
-    viewModelPrueba.agregarAlCarrito(
-        com.example.marcia.data.Producto("1", "Shampoo Especial", 12500.0, 10, 0)
+    ProductosAdminScreen(
+        viewModel = viewModelPrueba,
+        onNuevoProductoClick = {},
+        onEditarProductoClick = {}
     )
-
-    CarritoScreen(viewModel = viewModelPrueba)
-} // Fin de CarritoScreenPreview
-</file>
-
-<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenCompraConfirmada.kt">
-package com.example.marcia.ui.screen.productos
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CompraConfirmadaScreen(
-    totalCobrado: Double,
-    medioPago: String,
-    onVolverAlCatalogo: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    // Scaffold provee la estructura visual de la pantalla
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Venta Exitosa ✅") }
-            )
-        }
-    ) { innerPadding ->
-
-        // Contenedor principal centrado vertical y horizontalmente
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            // Ícono o emoji representativo de éxito grande
-            Text(
-                text = "🎉",
-                fontSize = 64.sp
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Título principal de confirmación
-            Text(
-                text = "¡Cobro realizado con éxito!",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Subtítulo aclaratorio
-            Text(
-                text = "La transacción se registró correctamente en el sistema del salón.",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Tarjeta con el resumen de la operación
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "Medio de pago:")
-                        Text(text = medioPago, fontWeight = FontWeight.Bold)
-                    } // Fin de Row medio de pago
-
-                    Divider()
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "Total cobrado:", fontWeight = FontWeight.Bold)
-                        Text(
-                            text = "$ $totalCobrado",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 18.sp
-                        )
-                    } // Fin de Row total
-                } // Fin de Column interna de la tarjeta
-            } // Fin de Card de resumen
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Botón para volver al catálogo y arrancar de nuevo
-            Button(
-                onClick = onVolverAlCatalogo,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Nueva Venta / Volver al Catálogo")
-            } // Fin de Button volver
-
-        } // Fin de Column principal
-    } // Fin de Scaffold
-} // Fin de CompraConfirmadaScreen
-
-/**
- * Vista previa para verificar el diseño de éxito en el IDE sin compilar en el emulador.
- */
-@Preview(showBackground = true)
-@Composable
-fun CompraConfirmadaScreenPreview() {
-    CompraConfirmadaScreen(
-        totalCobrado = 23500.0,
-        medioPago = "Efectivo",
-        onVolverAlCatalogo = {}
-    )
-} // Fin de CompraConfirmadaScreenPreview
-</file>
-
-<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenDetalleProducto.kt">
-package com.example.marcia.ui.screen.productos
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.marcia.data.Producto
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DetalleProductoScreen(
-    producto: Producto,
-    onVolverClick: () -> Unit,
-    onAgregarAlCarrito: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    // Scaffold provee la estructura visual estándar de la pantalla
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Detalle del Producto 📦") },
-                navigationIcon = {
-                    // Botón para volver a la pantalla anterior
-                    TextButton(onClick = onVolverClick) {
-                        Text("← Volver")
-                    } // Fin de TextButton volver
-                }
-            )
-        }
-    ) { innerPadding ->
-
-        // Contenedor principal en columna con separación entre elementos
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            // Bloque superior con toda la información del producto
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-
-                // Nombre principal del producto
-                Text(
-                    text = producto.nombre,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                // Precio destacado
-                Text(
-                    text = "Precio: $ ${producto.precio}",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                // Tarjeta informativa con el stock disponible
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Stock disponible:",
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "${producto.stock} unidades en el salón",
-                            fontSize = 16.sp
-                        )
-                    } // Fin de Column interna
-                } // Fin de Card de stock
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Descripción conceptual del producto
-                Text(
-                    text = "Descripción:",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-
-                Text(
-                    text = "Producto profesional seleccionado para el cuidado y tratamiento capilar en el salón de belleza Marcia. Ideal para aplicación en servicios o venta directa.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-            } // Fin de Column de información
-
-            // Botón inferior para sumar el producto al carrito desde el detalle
-            Button(
-                onClick = onAgregarAlCarrito,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Agregar al Carrito 🛒")
-            } // Fin de Button agregar
-
-        } // Fin de Column principal
-    } // Fin de Scaffold
-} // Fin de DetalleProductoScreen
-
-/**
- * Vista previa para testear el diseño del detalle en el IDE sin compilar en el emulador.
- */
-@Preview(showBackground = true)
-@Composable
-fun DetalleProductoScreenPreview() {
-    // Objeto de prueba para visualizar la interfaz
-    val productoPrueba = Producto(
-        id = "1",
-        nombre = "Shampoo Especial Profesional",
-        precio = 12500.0,
-        stock = 10,
-        imagenResId = 0
-    )
-
-    DetalleProductoScreen(
-        producto = productoPrueba,
-        onVolverClick = {},
-        onAgregarAlCarrito = {}
-    )
-} // Fin de DetalleProductoScreenPreview
-</file>
-
-<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenProductos.kt">
-package com.example.marcia.ui.screen.productos
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.marcia.data.Producto
-import com.example.marcia.ui.viewModel.ProductosViewModel
-
-
-
-/**
- * @Preview: Permite renderizar la pantalla directamente en la pestaña "Design" o "Split"
- * de tu entorno de desarrollo, sin necesidad de compilar la app en un celular ni en un emulador.
- */
-@Preview(showBackground = true)
-@Composable
-fun ProductosScreenPreview() {
-    // Instanciamos el ViewModel para alimentar la vista previa con datos de prueba
-    @Suppress("ViewModelConstructorInComposable")
-    val viewModelPrueba = ProductosViewModel()
-
-    // Llamamos a nuestra pantalla principal pasándole el ViewModel
-    ProductosScreen(viewModel = viewModelPrueba)
-} // Fin de ProductosScreenPreview
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProductosScreen(
-    viewModel: ProductosViewModel,
-    modifier: Modifier = Modifier
-) {
-    // Scaffold provee la estructura visual básica de la pantalla
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Venta de Productos 🛍️") }
-            )
-        }
-    )
-    { innerPadding ->
-
-        // Contenedor principal en columna
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-
-            // Título de la sección
-            Text(
-                text = "Catálogo disponible",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // LazyColumn para renderizar la lista de productos de forma eficiente
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(viewModel.listaProductos) { producto ->
-                    ProductoItemCard(
-                        producto = producto,
-                        onAgregarClick = {
-                            viewModel.agregarAlCarrito(producto)
-                        }
-                    )
-                } // Fin de items
-            } // Fin de LazyColumn
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Tarjeta inferior que funciona como resumen del carrito y cobro
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(text = "Productos en carrito: ${viewModel.carrito.size}")
-
-                    Text(
-                        text = "Total a Pagar: $ ${viewModel.totalVenta}",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Botón para concretar la venta
-                    Button(
-                        onClick = {
-                            viewModel.finalizarVenta()
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = viewModel.carrito.isNotEmpty()
-                    ) {
-                        Text(text = "Finalizar Venta")
-                    } // Fin de Button
-
-                } // Fin de Column interna del Card
-            } // Fin de Card de resumen
-
-        } // Fin de Column principal
-    } // Fin de Scaffold
-} // Fin de ProductosScreen
-
-/**
- * Componente visual individual (Card) para cada producto del catálogo.
- */
-@Composable
-fun ProductoItemCard(
-    producto: Producto,
-    onAgregarClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            // Columna con detalles del producto (Nombre, precio, stock)
-            Column {
-                Text(
-                    text = producto.nombre,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Precio: $ ${producto.precio}",
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Stock: ${producto.stock}",
-                    fontSize = 12.sp
-                )
-            } // Fin de Column de detalles
-
-            // Botón para agregar al carrito
-            Button(
-                onClick = onAgregarClick
-            ) {
-                Text("Agregar")
-            } // Fin de Button agregar
-
-        } // Fin de Row
-    } // Fin de Card de producto
-} // Fin de ProductoItemCard
+}
 </file>
 
 <file path="app/src/main/java/com/example/marcia/ui/screen/Turnos/TurnosScreen.kt">
@@ -1452,134 +1214,6 @@ val Typography = Typography(
     )
     */
 )
-</file>
-
-<file path="app/src/main/java/com/example/marcia/ui/viewmodel/ProductosViewModel.kt">
-package com.example.marcia.ui.viewModel
-
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import com.example.marcia.data.Producto
-
-/**
- * Modelo interno para representar un elemento dentro del carrito con su cantidad.
- */
-data class ItemCarrito(
-    val producto: Producto,
-    var cantidad: Int
-)
-
-class ProductosViewModel : ViewModel() {
-
-    // Lista de productos en catálogo
-    var listaProductos by mutableStateOf(
-        listOf(
-            Producto("1", "Shampoo Especial", 12500.0, 10, 0),
-            Producto("2", "Acondicionador Brillo", 11000.0, 5, 0),
-            Producto("3", "Crema para peinar", 9500.0, 8, 0),
-            Producto("4", "Aceite de Argan", 15000.0, 3, 0)
-        )
-    )
-        private set
-
-    // Lista de ítems en el carrito de compras
-    var carrito by mutableStateOf(listOf<ItemCarrito>())
-        private set
-
-    // Medio de pago seleccionado (Efectivo, Transferencia, Tarjeta)
-    var medioPagoSeleccionado by mutableStateOf("Efectivo")
-        private set
-
-    // Opciones disponibles de medio de pago
-    val mediosPagoDisponibles = listOf("Efectivo", "Transferencia", "Tarjeta de Débito/Crédito")
-
-    /**
-     * Calcula el monto total acumulado del carrito dinámicamente.
-     */
-    val totalVenta: Double
-        get() = carrito.sumOf { it.producto.precio * it.cantidad }
-
-    /**
-     * Agrega un producto al carrito o incrementa su cantidad si ya existía.
-     */
-    fun agregarAlCarrito(producto: Producto) {
-        val itemExistente = carrito.find { it.producto.id == producto.id }
-        if (itemExistente != null) {
-            // Si ya existe, creamos una nueva lista incrementando la cantidad del ítem
-            carrito = carrito.map {
-                if (it.producto.id == producto.id) {
-                    it.copy(cantidad = it.cantidad + 1)
-                } else {
-                    it
-                }
-            }
-        } else {
-            // Si no existe, lo sumamos a la lista con cantidad 1
-            carrito = carrito + ItemCarrito(producto = producto, cantidad = 1)
-        }
-    } // Fin de agregarAlCarrito
-
-    /**
-     * Incrementa la cantidad de un producto en el carrito.
-     */
-    fun incrementarCantidad(item: ItemCarrito) {
-        carrito = carrito.map {
-            if (it.producto.id == item.producto.id) {
-                it.copy(cantidad = it.cantidad + 1)
-            } else {
-                it
-            }
-        }
-    } // Fin de incrementarCantidad
-
-    /**
-     * Decrementa la cantidad de un producto o lo elimina si llega a cero.
-     */
-    fun decrementarCantidad(item: ItemCarrito) {
-        if (item.cantidad > 1) {
-            carrito = carrito.map {
-                if (it.producto.id == item.producto.id) {
-                    it.copy(cantidad = it.cantidad - 1)
-                } else {
-                    it
-                }
-            }
-        } else {
-            // Si la cantidad es 1 y decrementa, se remueve del carrito
-            carrito = carrito.filter { it.producto.id != item.producto.id }
-        }
-    } // Fin de decrementarCantidad
-
-    /**
-     * Elimina por completo un ítem del carrito.
-     */
-    fun eliminarDelCarrito(item: ItemCarrito) {
-        carrito = carrito.filter { it.producto.id != item.producto.id }
-    } // Fin de eliminarDelCarrito
-
-    /**
-     * Actualiza el medio de pago seleccionado.
-     */
-    fun seleccionarMedioPago(medio: String) {
-        medioPagoSeleccionado = medio
-    } // Fin de seleccionarMedioPago
-
-    /**
-     * Simula el cobro y cierre de la venta.
-     */
-    fun finalizarVenta(): Boolean {
-        if (carrito.isEmpty()) {
-            return false
-        } else {
-            // Lógica futura para guardar en BD/API
-            carrito = emptyList()
-            return true
-        }
-    } // Fin de finalizarVenta
-
-} // Fin de ProductosViewModel
 </file>
 
 <file path="app/src/main/keepRules/rules.keep">
@@ -2386,6 +2020,19 @@ dependencyResolutionManagement {
 
 rootProject.name = "Marcia - Salon de belleza"
 include(":app")
+</file>
+
+<file path="app/src/main/java/com/example/marcia/data/Producto.kt">
+package com.example.marcia.data
+
+data class Producto(
+    val id: String,
+    val nombre: String,
+    val descripcion: String = "", // <- Agregamos la descripción con valor por defecto
+    val precio: Double,
+    val stock: Int,
+    val imagenResId: Int = 0
+)
 </file>
 
 <file path="app/src/main/java/com/example/marcia/ui/screen/Servicios/RegistrarServicioScreen.kt">
@@ -3283,102 +2930,6 @@ data class Usuario (
 }
 </file>
 
-<file path="app/src/main/java/com/example/marcia/ui/navigation/Rutas.kt">
-package com.example.marcia.ui.navigation
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Badge
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Spa
-import androidx.compose.material.icons.outlined.AccountBalanceWallet
-import androidx.compose.material.icons.outlined.Badge
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Spa
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation3.runtime.NavKey
-import kotlinx.serialization.Serializable
-
-/**
- * Type-safe serializable navigation routes for Jetpack Compose Navigation 3.
- */
-sealed interface ScreenRoute : NavKey
-
-@Serializable
-data object LoginRoute : ScreenRoute
-
-// Primary Bottom Navigation Destinations
-@Serializable
-data object TurnosRoute : ScreenRoute
-
-@Serializable
-data object ServiciosRoute : ScreenRoute
-
-@Serializable
-data object EmpleadosRoute : ScreenRoute
-
-@Serializable
-data object RegistroEmpleadoRoute : ScreenRoute
-
-@Serializable
-data object FinanzasRoute : ScreenRoute
-
-// Secondary / Workflow Destinations with serializable arguments
-@Serializable
-data class DetalleTurnoRoute(val appointmentId: String) : ScreenRoute
-
-@Serializable
-data object NuevoTurnoRoute : ScreenRoute
-
-@Serializable
-data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
-
-@Serializable
-data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
-
-/**
- * Representation of top-level destinations shown in the bottom navigation bar.
- */
-data class TopLevelDestination(
-    val route: NavKey,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val label: String,
-    val testTag: String
-)
-
-val TOP_LEVEL_DESTINATIONS = listOf(
-    TopLevelDestination(
-        route = TurnosRoute,
-        selectedIcon = Icons.Filled.CalendarMonth,
-        unselectedIcon = Icons.Outlined.CalendarMonth,
-        label = "Turnos",
-        testTag = "nav_tab_turnos"
-    ),
-    TopLevelDestination(
-        route = ServiciosRoute,
-        selectedIcon = Icons.Filled.Spa,
-        unselectedIcon = Icons.Outlined.Spa,
-        label = "Servicios",
-        testTag = "nav_tab_servicios"
-    ),
-    TopLevelDestination(
-        route = EmpleadosRoute,
-        selectedIcon = Icons.Filled.Badge,
-        unselectedIcon = Icons.Outlined.Badge,
-        label = "Empleados",
-        testTag = "nav_tab_empleados"
-    ),
-    TopLevelDestination(
-        route = FinanzasRoute,
-        selectedIcon = Icons.Filled.AccountBalanceWallet,
-        unselectedIcon = Icons.Outlined.AccountBalanceWallet,
-        label = "Finanzas",
-        testTag = "nav_tab_finanzas"
-    )
-)
-</file>
-
 <file path="app/src/main/java/com/example/marcia/ui/screen/Empleados/EmpleadoDetalleScreen.kt">
 package com.example.marcia.ui.screen.Empleados
 
@@ -3492,6 +3043,176 @@ fun DetalleEmpleadoContentPreview() {
         onRolChange = {},
         onConfirmar = {},
         onDismiss = {}
+    )
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenDetalleProducto.kt">
+package com.example.marcia.ui.screen.productos
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.marcia.data.Producto
+
+/**
+ * Pantalla de detalle / ficha técnica de un producto para el panel de administración.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetalleProductoScreen(
+    producto: Producto,
+    onVolverClick: () -> Unit,
+    onEditarClick: () -> Unit, // Cambiamos el callback de carrito por el de edición
+    modifier: Modifier = Modifier
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Detalle del Producto 📋",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    TextButton(onClick = onVolverClick) {
+                        Text(text = "← Volver")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                )
+            )
+        }
+    ) { innerPadding ->
+
+        // Contenedor principal en columna con separación limpia
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            // Bloque superior con toda la información del producto
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                // Nombre principal del producto
+                Text(
+                    text = producto.nombre,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                // Precio destacado con contenedor sutil
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+                ) {
+                    Text(
+                        text = "Precio: $ ${producto.precio}",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Tarjeta informativa con el stock disponible
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Stock disponible en inventario",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "${producto.stock} unidades",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Descripción real del producto cargada en el ABML
+                Text(
+                    text = "Descripción",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Text(
+                    text = producto.descripcion.ifBlank { "Sin descripción detallada registrada para este artículo." },
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 22.sp
+                )
+
+            }
+
+            // Botón inferior para pasar a editar el producto
+            Button(
+                onClick = onEditarClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Text(
+                    text = "Editar Producto ✏️",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetalleProductoScreenPreview() {
+    val productoPrueba = Producto(
+        id = "1",
+        nombre = "Shampoo Especial Profesional",
+        descripcion = "Tratamiento capilar nutritivo de uso profesional ideal para salón.",
+        precio = 12500.0,
+        stock = 10,
+        imagenResId = 0
+    )
+
+    DetalleProductoScreen(
+        producto = productoPrueba,
+        onVolverClick = {},
+        onEditarClick = {}
     )
 }
 </file>
@@ -3665,6 +3386,105 @@ class EmpleadosViewModel : ViewModel() {
 }
 </file>
 
+<file path="app/src/main/java/com/example/marcia/ui/viewmodel/ProductosViewModel.kt">
+package com.example.marcia.ui.viewmodel
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import com.example.marcia.data.Producto
+
+/**
+ * ViewModel encargado de gestionar el ABML de productos para el panel de administración
+ * del salón de belleza, preparado con una lista local en memoria lista para conectar con BD.
+ */
+class ProductosViewModel : ViewModel() {
+
+    // Lista de productos en inventario para administración (ABML)
+    var listaProductos by mutableStateOf(
+        listOf(
+            Producto(
+                id = "1",
+                nombre = "Shampoo Especial",
+                descripcion = "Tratamiento capilar nutritivo de uso profesional",
+                precio = 12500.0,
+                stock = 10,
+                imagenResId = 0
+            ),
+            Producto(
+                id = "2",
+                nombre = "Acondicionador Brillo",
+                descripcion = "Fórmula avanzada para suavidad extrema",
+                precio = 11000.0,
+                stock = 5,
+                imagenResId = 0
+            ),
+            Producto(
+                id = "3",
+                nombre = "Crema para peinar",
+                descripcion = "Definición y control anti-frizz",
+                precio = 9500.0,
+                stock = 8,
+                imagenResId = 0
+            ),
+            Producto(
+                id = "4",
+                nombre = "Aceite de Argan",
+                descripcion = "Reparación profunda de puntas",
+                precio = 15000.0,
+                stock = 3,
+                imagenResId = 0
+            )
+        )
+    )
+        private set
+
+    /**
+     * ALTA o MODIFICACIÓN de un producto.
+     * Si el ID viene nulo o vacío, se crea uno nuevo (Alta).
+     * Si el ID ya existe, se actualizan sus datos (Modificación).
+     */
+    fun guardarProducto(id: String?, nombre: String, descripcion: String, precio: Double, stock: Int) {
+        if (id.isNullOrEmpty()) {
+            // Alta de un nuevo producto generando un ID único provisorio
+            val nuevoId = (listaProductos.size + 1).toString()
+            val nuevoProducto = Producto(
+                id = nuevoId,
+                nombre = nombre,
+                descripcion = descripcion,
+                precio = precio,
+                stock = stock,
+                imagenResId = 0
+            )
+            listaProductos = listaProductos + nuevoProducto
+        } else {
+            // Modificación de un producto existente
+            listaProductos = listaProductos.map { producto ->
+                if (producto.id == id) {
+                    producto.copy(
+                        nombre = nombre,
+                        descripcion = descripcion,
+                        precio = precio,
+                        stock = stock
+                    )
+                } else {
+                    producto
+                }
+            }
+        }
+    } // Fin de guardarProducto
+
+    /**
+     * BAJA de un producto por su ID (Eliminar).
+     */
+    fun eliminarProducto(id: String) {
+        listaProductos = listaProductos.filter { it.id != id }
+    } // Fin de eliminarProducto
+
+} // Fin de ProductosViewModel
+</file>
+
 <file path="app/src/main/java/com/example/marcia/ui/theme/Theme.kt">
 package com.example.marcia.ui.theme
 
@@ -3780,6 +3600,145 @@ fun MarciaSalonTheme(
         content = content
     )
 }
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/navigation/Rutas.kt">
+package com.example.marcia.ui.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Inventory2
+import androidx.compose.material.icons.outlined.Spa
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
+/**
+ * Rutas tipadas y serializables para Jetpack Compose Navigation 3.
+ * Centraliza todos los destinos de la aplicación del salón de belleza.
+ */
+sealed interface ScreenRoute : NavKey
+
+@Serializable
+data object LoginRoute : ScreenRoute
+
+// ========================================================
+// DESTINOS PRINCIPALES (BARRA DE NAVEGACIÓN INFERIOR)
+// ========================================================
+
+@Serializable
+data object TurnosRoute : ScreenRoute
+
+@Serializable
+data object ServiciosRoute : ScreenRoute
+
+@Serializable
+data object EmpleadosRoute : ScreenRoute
+
+@Serializable
+data object RegistroEmpleadoRoute : ScreenRoute
+
+@Serializable
+data object FinanzasRoute : ScreenRoute
+
+/**
+ * Ruta principal para el panel de administración (ABML) de productos e inventario.
+ */
+@Serializable
+data object ProductosRoute : ScreenRoute
+
+// ========================================================
+// DESTINOS SECUNDARIOS / FLUJOS INTERNOS CON ARGUMENTOS
+// ========================================================
+
+@Serializable
+data class DetalleTurnoRoute(val appointmentId: String) : ScreenRoute
+
+@Serializable
+data object NuevoTurnoRoute : ScreenRoute
+
+@Serializable
+data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
+
+@Serializable
+data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
+
+// --- Rutas del módulo de Productos (ABML) ---
+
+/**
+ * Ruta para visualizar la ficha técnica completa de un producto.
+ */
+@Serializable
+data class DetalleProductoRoute(val productoId: String) : ScreenRoute
+
+/**
+ * Ruta para el formulario de Alta y Modificación de productos.
+ * - Si [productoId] es null: Abre el formulario vacío para crear un producto nuevo (Alta).
+ * - Si [productoId] contiene un ID: Carga los datos existentes para editarlo (Modificación).
+ */
+@Serializable
+data class FormularioProductoRoute(val productoId: String? = null) : ScreenRoute
+
+// ========================================================
+// CONFIGURACIÓN DE LA BARRA DE NAVEGACIÓN INFERIOR
+// ========================================================
+
+/**
+ * Representación de cada pestaña principal mostrada en la barra de navegación inferior.
+ */
+data class TopLevelDestination(
+    val route: NavKey,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val label: String,
+    val testTag: String
+)
+
+val TOP_LEVEL_DESTINATIONS = listOf(
+    TopLevelDestination(
+        route = TurnosRoute,
+        selectedIcon = Icons.Filled.CalendarMonth,
+        unselectedIcon = Icons.Outlined.CalendarMonth,
+        label = "Turnos",
+        testTag = "nav_tab_turnos"
+    ),
+    TopLevelDestination(
+        route = ServiciosRoute,
+        selectedIcon = Icons.Filled.Spa,
+        unselectedIcon = Icons.Outlined.Spa,
+        label = "Servicios",
+        testTag = "nav_tab_servicios"
+    ),
+    TopLevelDestination(
+        route = EmpleadosRoute,
+        selectedIcon = Icons.Filled.Badge,
+        unselectedIcon = Icons.Outlined.Badge,
+        label = "Empleados",
+        testTag = "nav_tab_empleados"
+    ),
+    TopLevelDestination(
+        route = ProductosRoute,
+        // Cambiamos el ícono del carrito por una caja de inventario acorde al ABML
+        selectedIcon = Icons.Filled.Inventory2,
+        unselectedIcon = Icons.Outlined.Inventory2,
+        label = "Productos",
+        testTag = "nav_tab_productos"
+    ),
+    TopLevelDestination(
+        route = FinanzasRoute,
+        selectedIcon = Icons.Filled.AccountBalanceWallet,
+        unselectedIcon = Icons.Outlined.AccountBalanceWallet,
+        label = "Finanzas",
+        testTag = "nav_tab_finanzas"
+    )
+)
 </file>
 
 <file path="app/src/main/java/com/example/marcia/ui/screen/Empleados/RegistrarEmpleadoScreen.kt">
@@ -4389,20 +4348,34 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.example.loginbasico.ui.ViewModel.LoginViewModel
 import com.example.marcia.ui.screen.Empleados.EmpleadosScreen
-
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
+import com.example.marcia.ui.screen.productos.DetalleProductoScreen
+import com.example.marcia.ui.screen.productos.FormularioProductoScreen
+import com.example.marcia.ui.screen.productos.ProductosAdminScreen
+import com.example.marcia.ui.viewmodel.ProductosViewModel
 
+/**
+ * Componente raíz de la aplicación.
+ * Coordina la navegación tipada (Navigation 3), el Scaffold principal
+ * y la visibilidad dinámica de la barra de navegación inferior.
+ */
 @Composable
 fun MarciaSalonApp(
     backStack: NavBackStack<NavKey> = rememberNavBackStack(EmpleadosRoute)
 ) {
+    // ViewModel encargado de la sesión y validación de acceso
     val loginViewModel: LoginViewModel = viewModel()
+
+    // ViewModel único y compartido para gestionar el estado del ABML de productos
+    val productosViewModel: ProductosViewModel = viewModel()
+
+    // Obtenemos la pantalla actual en el tope de la pila de navegación
     val currentDestination = backStack.lastOrNull()
 
-    // Check if current route is one of the top level destinations
+    // Determinamos si se debe mostrar la barra inferior (solo en las secciones principales)
     val showBottomBar by remember(currentDestination) {
         derivedStateOf {
             TOP_LEVEL_DESTINATIONS.any { topLevel ->
@@ -4429,6 +4402,8 @@ fun MarciaSalonApp(
             }
         }
     ) { innerPadding ->
+
+        // Contenedor principal que resuelve qué pantalla dibujar según la ruta activa
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
@@ -4436,6 +4411,8 @@ fun MarciaSalonApp(
                 .fillMaxSize()
                 .padding(innerPadding),
             entryProvider = entryProvider {
+
+                // Pantalla inicial de inicio de sesión
                 entry<LoginRoute> {
                     LoginScreen(
                         loginViewModel = loginViewModel,
@@ -4446,71 +4423,95 @@ fun MarciaSalonApp(
                     )
                 }
 
-                // Tab 1: Turnos (Agenda)
+                // Sección 1: Agenda de Turnos
                 entry<TurnosRoute> {
-                    TurnosScreen(
-//                        onNavigateToTurnoDetail = { appointmentId ->
-//                            backStack.add(DetalleTurnoRoute(appointmentId = appointmentId))
-//                        },
-//                        onNavigateToNuevoTurno = {
-//                            backStack.add(NuevoTurnoRoute)
-//                        }
-                    )
+                    TurnosScreen()
                 }
 
-                // Tab 2: Servicios
+                // Sección 2: Catálogo de Servicios
                 entry<ServiciosRoute> {
-                    ServiciosScreen(
-//                        onNavigateToServiceDetail = { serviceId ->
-//                            backStack.add(DetalleServicioRoute(serviceId = serviceId))
-//                        },
-//                        onNavigateToNuevoTurno = {
-//                            backStack.add(NuevoTurnoRoute)
-//                        }
-                    )
+                    ServiciosScreen()
                 }
 
-                // Tab 3: Empleados
+                // Sección 3: Gestión de Empleados
                 entry<EmpleadosRoute> {
-                    EmpleadosScreen(
-                    )
+                    EmpleadosScreen()
                 }
 
-                // Tab 4: Finanzas
+                // Sección 4: Control Financiero
                 entry<FinanzasRoute> {
                     FinanzasScreen()
                 }
 
-                // Sub-Screens
-//                entry<DetalleTurnoRoute> { key ->
-//                    DetalleTurnoScreen(
-//                        appointmentId = key.appointmentId,
-//                        onNavigateBack = { backStack.removeLastOrNull() }
-//                    )
-//                }
-//                entry<NuevoTurnoRoute> {
-//                    NuevoTurnoScreen(
-//                        onNavigateBack = { backStack.removeLastOrNull() }
-//                    )
-//                }
-//                entry<DetalleServicioRoute> { key ->
-//                    DetalleServicioScreen(
-//                        serviceId = key.serviceId,
-//                        onNavigateBack = { backStack.removeLastOrNull() },
-//                        onNavigateToNuevoTurno = { backStack.add(NuevoTurnoRoute) }
-//                    )
-//                }
-//                entry<DetalleEmpleadoRoute> { key ->
-//                    DetalleEmpleadoScreen(
-//                        employeeId = key.employeeId,
-//                        onNavigateBack = { backStack.removeLastOrNull() }
-//                    )
-//                }
+                // ========================================================
+                // MÓDULO DE ADMINISTRACIÓN DE PRODUCTOS (ABML) 📦
+                // ========================================================
+
+                // 1. LISTADO Y BAJA: Pantalla principal del inventario
+                entry<ProductosRoute> {
+                    ProductosAdminScreen(
+                        viewModel = productosViewModel,
+                        onNuevoProductoClick = {
+                            // Navega al formulario vacío para crear un producto (ALTA)
+                            backStack.add(FormularioProductoRoute(productoId = null))
+                        },
+                        onEditarProductoClick = { productoId ->
+                            // Navega al formulario pasando el ID para editarlo (MODIFICACIÓN)
+                            backStack.add(FormularioProductoRoute(productoId = productoId))
+                        }
+                    )
+                }
+
+                // 2. FICHA TÉCNICA: Vista detallada del producto
+                entry<DetalleProductoRoute> { key ->
+                    val productoEncontrado = productosViewModel.listaProductos.find { it.id == key.productoId }
+
+                    if (productoEncontrado != null) {
+                        DetalleProductoScreen(
+                            producto = productoEncontrado,
+                            onVolverClick = { backStack.removeLastOrNull() },
+                            onEditarClick = {
+                                // Permite saltar directo a la edición desde la vista de detalle
+                                backStack.add(FormularioProductoRoute(productoId = productoEncontrado.id))
+                            }
+                        )
+                    }
+                }
+
+                // 3. ALTA Y MODIFICACIÓN: Formulario con los 4 campos requeridos
+                entry<FormularioProductoRoute> { key ->
+                    // Si viene un ID buscamos el producto en memoria; si es null queda vacío para crear
+                    val productoAEditar = key.productoId?.let { id ->
+                        productosViewModel.listaProductos.find { it.id == id }
+                    }
+
+                    FormularioProductoScreen(
+                        productoExistente = productoAEditar,
+                        onGuardarClick = { nombre, descripcion, precio, stock ->
+                            // Ejecuta el guardado en el ViewModel (crea o actualiza según corresponda)
+                            productosViewModel.guardarProducto(
+                                id = key.productoId,
+                                nombre = nombre,
+                                descripcion = descripcion,
+                                precio = precio,
+                                stock = stock
+                            )
+                            // Vuelve automáticamente al listado tras guardar
+                            backStack.removeLastOrNull()
+                        },
+                        onVolverClick = { backStack.removeLastOrNull() }
+                    )
+                }
+
             }
         )
     }
 }
 
+/**
+ * Barra de navegación inferior estilizada con Material 3.
+ * Permite alternar entre las secciones principales limpiando el historial intermedio.
+ */
 @Composable
 fun MarciaBottomNavBar(
     backStack: NavBackStack<NavKey>,

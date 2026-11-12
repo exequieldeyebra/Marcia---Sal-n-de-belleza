@@ -1,156 +1,198 @@
 package com.example.marcia.ui.screen.productos
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.marcia.data.Producto
 
 /**
- * Pantalla de formulario para el ABML de productos.
- * Permite dar de alta un nuevo artículo o modificar uno existente gestionando
- * cuatro campos obligatorios: nombre, descripción, precio y stock.
+ * Contenido del formulario de Alta y Modificación para el modal de productos.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioProductoScreen(
-    productoExistente: Producto? = null, // Si es null funciona como Alta; si trae datos, funciona como Edición
-    onGuardarClick: (nombre: String, descripcion: String, precio: Double, stock: Int) -> Unit,
-    onVolverClick: () -> Unit,
-    modifier: Modifier = Modifier
+fun FormularioProductoContent(
+    productoState: Producto?,
+    tituloPanel: String,
+    iconoPanel: ImageVector? = null,
+    onNombreChange: (String) -> Unit,
+    onDescripcionChange: (String) -> Unit,
+    onPrecioChange: (String) -> Unit,
+    onStockChange: (String) -> Unit,
+    onConfirmar: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    // Estados locales para capturar el valor de los campos de texto
-    var nombre by remember { mutableStateOf(productoExistente?.nombre ?: "") }
-    var descripcion by remember { mutableStateOf(productoExistente?.descripcion ?: "") }
-    var precioStr by remember { mutableStateOf(productoExistente?.precio?.toString() ?: "") }
-    var stockStr by remember { mutableStateOf(productoExistente?.stock?.toString() ?: "") }
-
-    // Estado para controlar y mostrar mensajes de error ante datos inválidos
     var errorMensaje by remember { mutableStateOf("") }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = if (productoExistente == null) "Nuevo Producto 📝" else "Editar Producto ✏️",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    TextButton(onClick = onVolverClick) {
-                        Text(text = "← Volver")
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Encabezado del Modal
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (iconoPanel != null) {
+                        Icon(iconoPanel, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(20.dp))
+                    } else {
+                        Text("📦", fontSize = 18.sp)
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                }
+                Text(
+                    text = tituloPanel,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            IconButton(onClick = onDismiss) {
+                Icon(Icons.Default.Close, contentDescription = "Cerrar", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
+
+        // Campo: Nombre del producto
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("NOMBRE DEL PRODUCTO", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+            TextField(
+                value = productoState?.nombre ?: "",
+                onValueChange = onNombreChange,
+                placeholder = { Text("Ej: Shampoo Especial Profesional", color = Color.Gray) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
                 )
             )
         }
-    ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()) // Permite scrollear si la pantalla es chica
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "Complete los datos del inventario",
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
 
-            // Campo de texto para el Nombre del producto
-            OutlinedTextField(
-                value = nombre,
-                onValueChange = { nombre = it },
-                label = { Text("Nombre del producto") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
-            )
+        // Fila para Precio y Stock
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("PRECIO (ARS)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                TextField(
+                    value = if (productoState?.precio == 0.0) "" else productoState?.precio?.toString() ?: "",
+                    onValueChange = onPrecioChange,
+                    placeholder = { Text("12500", color = Color.Gray) },
+                    singleLine = true,
+                    leadingIcon = { Text("$", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+                )
+            }
 
-            // Campo de texto para la Descripción detallada
-            OutlinedTextField(
-                value = descripcion,
-                onValueChange = { descripcion = it },
-                label = { Text("Descripción") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("STOCK (UNIDADES)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                TextField(
+                    value = if (productoState?.stock == 0) "" else productoState?.stock?.toString() ?: "",
+                    onValueChange = onStockChange,
+                    placeholder = { Text("10", color = Color.Gray) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+                )
+            }
+        }
+
+        // Campo: Descripción
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("DESCRIPCIÓN", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+            TextField(
+                value = productoState?.descripcion ?: "",
+                onValueChange = onDescripcionChange,
+                placeholder = { Text("Detalle del artículo...", color = Color.Gray) },
+                singleLine = false,
                 minLines = 3,
-                maxLines = 5
-            )
-
-            // Campo de texto para el Precio (teclado numérico)
-            OutlinedTextField(
-                value = precioStr,
-                onValueChange = { precioStr = it },
-                label = { Text("Precio ($)") },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true
-            )
-
-            // Campo de texto para el Stock disponible (teclado numérico)
-            OutlinedTextField(
-                value = stockStr,
-                onValueChange = { stockStr = it },
-                label = { Text("Stock disponible (unidades)") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true
-            )
-
-            // Muestra una alerta visual si algún campo obligatorio no está bien completado
-            if (errorMensaje.isNotEmpty()) {
-                Text(
-                    text = errorMensaje,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
                 )
-            }
+            )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
+        if (errorMensaje.isNotEmpty()) {
+            Text(
+                text = errorMensaje,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
 
-            // Botón principal de acción para validar y guardar los datos
-            Button(
-                onClick = {
-                    val precio = precioStr.toDoubleOrNull()
-                    val stock = stockStr.toIntOrNull()
+        Spacer(modifier = Modifier.height(8.dp))
 
-                    // Validamos que los campos no estén vacíos y que los números sean correctos
-                    if (nombre.isBlank() || precio == null || stock == null) {
-                        errorMensaje = "Por favor, complete correctamente todos los campos obligatorios."
-                    } else {
-                        errorMensaje = ""
-                        onGuardarClick(nombre.trim(), descripcion.trim(), precio, stock)
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text(
-                    text = "Guardar Producto",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+        // Botón Guardar
+        Button(
+            onClick = {
+                if (productoState?.nombre.isNullOrBlank() || productoState?.precio == null || productoState?.stock == null) {
+                    errorMensaje = "Por favor, complete correctamente los campos obligatorios."
+                } else {
+                    errorMensaje = ""
+                    onConfirmar()
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        ) {
+            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Confirmar y Guardar", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
