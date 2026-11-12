@@ -1,6 +1,7 @@
 package com.example.marcia.ui.screen.productos
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,6 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Pantalla de confirmación de venta exitosa con diseño moderno y minimalista.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompraConfirmadaScreen(
@@ -19,11 +23,18 @@ fun CompraConfirmadaScreen(
     onVolverAlCatalogo: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Scaffold provee la estructura visual de la pantalla
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Venta Exitosa ✅") }
+                title = {
+                    Text(
+                        text = "Venta Exitosa ✅",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                )
             )
         }
     ) { innerPadding ->
@@ -49,9 +60,10 @@ fun CompraConfirmadaScreen(
             // Título principal de confirmación
             Text(
                 text = "¡Cobro realizado con éxito!",
-                fontSize = 22.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -59,66 +71,86 @@ fun CompraConfirmadaScreen(
             // Subtítulo aclaratorio
             Text(
                 text = "La transacción se registró correctamente en el sistema del salón.",
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            // Tarjeta con el resumen de la operación
+            // Tarjeta con el resumen de la operación estilizada
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Medio de pago:")
-                        Text(text = medioPago, fontWeight = FontWeight.Bold)
-                    } // Fin de Row medio de pago
+                        Text(
+                            text = "Medio de pago:",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 15.sp
+                        )
+                        Text(
+                            text = medioPago,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp
+                        )
+                    }
 
-                    Divider()
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Total cobrado:", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "Total cobrado:",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                         Text(
                             text = "$ $totalCobrado",
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 18.sp
+                            fontSize = 20.sp
                         )
-                    } // Fin de Row total
-                } // Fin de Column interna de la tarjeta
-            } // Fin de Card de resumen
+                    }
+                }
+            }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(36.dp))
 
             // Botón para volver al catálogo y arrancar de nuevo
             Button(
                 onClick = onVolverAlCatalogo,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp)
             ) {
-                Text(text = "Nueva Venta / Volver al Catálogo")
-            } // Fin de Button volver
+                Text(
+                    text = "Nueva Venta / Volver al Catálogo",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-        } // Fin de Column principal
-    } // Fin de Scaffold
-} // Fin de CompraConfirmadaScreen
+        }
+    }
+}
 
-/**
- * Vista previa para verificar el diseño de éxito en el IDE sin compilar en el emulador.
- */
 @Preview(showBackground = true)
 @Composable
 fun CompraConfirmadaScreenPreview() {
@@ -127,4 +159,4 @@ fun CompraConfirmadaScreenPreview() {
         medioPago = "Efectivo",
         onVolverAlCatalogo = {}
     )
-} // Fin de CompraConfirmadaScreenPreview
+}

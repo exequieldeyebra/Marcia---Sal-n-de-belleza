@@ -31,20 +31,33 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.example.loginbasico.ui.ViewModel.LoginViewModel
 import com.example.marcia.ui.screen.Empleados.EmpleadosScreen
-
 import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
+import com.example.marcia.ui.screen.productos.CarritoScreen
+import com.example.marcia.ui.screen.productos.CompraConfirmadaScreen
+import com.example.marcia.ui.screen.productos.DetalleProductoScreen
+import com.example.marcia.ui.screen.productos.ProductosScreen
+import com.example.marcia.ui.viewmodel.ProductosViewModel
 
+/**
+ * Componente principal que coordina la navegación tipada (Navigation 3),
+ * el diseño del Scaffold global y la barra de navegación inferior del salón de belleza.
+ */
 @Composable
 fun MarciaSalonApp(
     backStack: NavBackStack<NavKey> = rememberNavBackStack(EmpleadosRoute)
 ) {
+    // ViewModel para la autenticación de usuarios
     val loginViewModel: LoginViewModel = viewModel()
+
+    // ViewModel compartido para gestionar todo el flujo de productos, stock y carrito
+    val productosViewModel: ProductosViewModel = viewModel()
+
     val currentDestination = backStack.lastOrNull()
 
-    // Check if current route is one of the top level destinations
+    // Validamos si la ruta actual pertenece a las pantallas principales para mostrar la barra inferior
     val showBottomBar by remember(currentDestination) {
         derivedStateOf {
             TOP_LEVEL_DESTINATIONS.any { topLevel ->
@@ -71,6 +84,8 @@ fun MarciaSalonApp(
             }
         }
     ) { innerPadding ->
+
+        // Contenedor principal de navegación tipada
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
@@ -78,6 +93,8 @@ fun MarciaSalonApp(
                 .fillMaxSize()
                 .padding(innerPadding),
             entryProvider = entryProvider {
+
+                // Ruta de Login inicial
                 entry<LoginRoute> {
                     LoginScreen(
                         loginViewModel = loginViewModel,
@@ -90,32 +107,17 @@ fun MarciaSalonApp(
 
                 // Tab 1: Turnos (Agenda)
                 entry<TurnosRoute> {
-                    TurnosScreen(
-//                        onNavigateToTurnoDetail = { appointmentId ->
-//                            backStack.add(DetalleTurnoRoute(appointmentId = appointmentId))
-//                        },
-//                        onNavigateToNuevoTurno = {
-//                            backStack.add(NuevoTurnoRoute)
-//                        }
-                    )
+                    TurnosScreen()
                 }
 
                 // Tab 2: Servicios
                 entry<ServiciosRoute> {
-                    ServiciosScreen(
-//                        onNavigateToServiceDetail = { serviceId ->
-//                            backStack.add(DetalleServicioRoute(serviceId = serviceId))
-//                        },
-//                        onNavigateToNuevoTurno = {
-//                            backStack.add(NuevoTurnoRoute)
-//                        }
-                    )
+                    ServiciosScreen()
                 }
 
                 // Tab 3: Empleados
                 entry<EmpleadosRoute> {
-                    EmpleadosScreen(
-                    )
+                    EmpleadosScreen()
                 }
 
                 // Tab 4: Finanzas
@@ -123,36 +125,76 @@ fun MarciaSalonApp(
                     FinanzasScreen()
                 }
 
-                // Sub-Screens
-//                entry<DetalleTurnoRoute> { key ->
-//                    DetalleTurnoScreen(
-//                        appointmentId = key.appointmentId,
-//                        onNavigateBack = { backStack.removeLastOrNull() }
-//                    )
-//                }
-//                entry<NuevoTurnoRoute> {
-//                    NuevoTurnoScreen(
-//                        onNavigateBack = { backStack.removeLastOrNull() }
-//                    )
-//                }
-//                entry<DetalleServicioRoute> { key ->
-//                    DetalleServicioScreen(
-//                        serviceId = key.serviceId,
-//                        onNavigateBack = { backStack.removeLastOrNull() },
-//                        onNavigateToNuevoTurno = { backStack.add(NuevoTurnoRoute) }
-//                    )
-//                }
-//                entry<DetalleEmpleadoRoute> { key ->
-//                    DetalleEmpleadoScreen(
-//                        employeeId = key.employeeId,
-//                        onNavigateBack = { backStack.removeLastOrNull() }
-//                    )
-//                }
+                // ========================================================
+                // MÓDULO DE PRODUCTOS Y VENTAS 🛍️
+                // ========================================================
+
+                // Pantalla Principal / Catálogo de Productos
+                entry<ProductosRoute> {
+                    ProductosScreen(
+                        viewModel = productosViewModel,
+                        onProductoClick = { productoId ->
+                            backStack.add(DetalleProductoRoute(productoId = productoId))
+                        },
+                        onIrAlCarritoClick = {
+                            backStack.add(CarritoRoute)
+                        }
+                    )
+                }
+
+                // Pantalla de Detalle de un Producto individual
+                entry<DetalleProductoRoute> { key ->
+                    val productoEncontrado = productosViewModel.listaProductos.find { it.id == key.productoId }
+
+                    if (productoEncontrado != null) {
+                        DetalleProductoScreen(
+                            producto = productoEncontrado,
+                            onVolverClick = { backStack.removeLastOrNull() },
+                            onAgregarAlCarrito = {
+                                productosViewModel.agregarAlCarrito(productoEncontrado)
+                                backStack.removeLastOrNull()
+                            }
+                        )
+                    }
+                }
+
+                // Pantalla de Carrito de Compras y Cobro
+                entry<CarritoRoute> {
+                    CarritoScreen(
+                        viewModel = productosViewModel,
+                        onVolverClick = { backStack.removeLastOrNull() },
+                        onVentaExitosa = {
+                            val totalCobrado = productosViewModel.totalVenta
+                            val medioPagoUsado = productosViewModel.medioPagoSeleccionado
+
+                            // Al llamar a finalizarVenta(), se valida, se limpia el carrito y avanza
+                            if (productosViewModel.finalizarVenta()) {
+                                backStack.add(CompraConfirmadaRoute(total = totalCobrado, medioPago = medioPagoUsado))
+                            }
+                        }
+                    )
+                }
+
+                // Pantalla de Confirmación de Venta Exitosa
+                entry<CompraConfirmadaRoute> { key ->
+                    CompraConfirmadaScreen(
+                        totalCobrado = key.total,
+                        medioPago = key.medioPago,
+                        onVolverAlCatalogo = {
+                            backStack.clear()
+                            backStack.add(ProductosRoute)
+                        }
+                    )
+                }
+
             }
         )
     }
 }
 
+/**
+ * Componente de la barra de navegación inferior (Bottom Bar).
+ */
 @Composable
 fun MarciaBottomNavBar(
     backStack: NavBackStack<NavKey>,

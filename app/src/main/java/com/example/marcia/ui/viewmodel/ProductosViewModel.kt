@@ -1,4 +1,4 @@
-package com.example.marcia.ui.viewModel
+package com.example.marcia.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +42,7 @@ class ProductosViewModel : ViewModel() {
      * Calcula el monto total acumulado del carrito dinámicamente.
      */
     val totalVenta: Double
-        get() = carrito.sumOf { it.producto.precio * it.cantidad }
+        get() = carrito.sumOf { it.producto.precio * it.cantidad } // <- Arreglado el operador *
 
     /**
      * Agrega un producto al carrito o incrementa su cantidad si ya existía.
@@ -84,7 +84,7 @@ class ProductosViewModel : ViewModel() {
         if (item.cantidad > 1) {
             carrito = carrito.map {
                 if (it.producto.id == item.producto.id) {
-                    it.copy(cantidad = it.cantidad - 1)
+                    it.copy(cantidad = it.cantidad - 1) // <- Arreglado el operador -
                 } else {
                     it
                 }
@@ -110,16 +110,20 @@ class ProductosViewModel : ViewModel() {
     } // Fin de seleccionarMedioPago
 
     /**
-     * Simula el cobro y cierre de la venta.
+     * Valida que el carrito tenga elementos para poder cobrar.
      */
     fun finalizarVenta(): Boolean {
-        if (carrito.isEmpty()) {
-            return false
-        } else {
-            // Lógica futura para guardar en BD/API
-            carrito = emptyList()
-            return true
-        }
-    } // Fin de finalizarVenta
+        return carrito.isNotEmpty()
+    }
+
+    /**
+     * Vaciado final del carrito que se invoca de forma segura.
+     */
+    fun limpiarCarritoDespuesDeCompra() {
+        carrito = emptyList()
+    }
+
+
+
 
 } // Fin de ProductosViewModel

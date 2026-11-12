@@ -1,0 +1,4557 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  src/
+    androidTest/
+      java/
+        com/
+          example/
+            marcia/
+              ExampleInstrumentedTest.kt
+    main/
+      java/
+        com/
+          example/
+            marcia/
+              data/
+                Empleado.kt
+                Producto.kt
+                Servicio.kt
+                Usuario.kt
+              ui/
+                navigation/
+                  MarciaAppNavigation.kt
+                  Rutas.kt
+                screen/
+                  Empleados/
+                    EmpleadoDetalleScreen.kt
+                    EmpleadosScreen.kt
+                    RegistrarEmpleadoScreen.kt
+                  Finanzas/
+                    FinanzasScreen.kt
+                    RegistrarComprobanteScreen.kt
+                  Login/
+                    login.kt
+                  productos/
+                    ScreenCarrito.kt
+                    ScreenCompraConfirmada.kt
+                    ScreenDetalleProducto.kt
+                    ScreenProductos.kt
+                  Servicios/
+                    RegistrarServicioScreen.kt
+                    ServiciosScreen.kt
+                  Turnos/
+                    TurnosScreen.kt
+                theme/
+                  Color.kt
+                  Theme.kt
+                  Type.kt
+                viewmodel/
+                  EmpleadosViewModel.kt
+                  LoginViewModel.kt
+                  ProductosViewModel.kt
+                  ServiciosViewModel.kt
+              MainActivity.kt
+      keepRules/
+        rules.keep
+      res/
+        drawable/
+          ic_launcher_background.xml
+          ic_launcher_foreground.xml
+        mipmap-anydpi/
+          ic_launcher_round.xml
+          ic_launcher.xml
+        mipmap-hdpi/
+          ic_launcher_round.webp
+          ic_launcher.webp
+        mipmap-mdpi/
+          ic_launcher_round.webp
+          ic_launcher.webp
+        mipmap-xhdpi/
+          ic_launcher_round.webp
+          ic_launcher.webp
+        mipmap-xxhdpi/
+          ic_launcher_round.webp
+          ic_launcher.webp
+        mipmap-xxxhdpi/
+          ic_launcher_round.webp
+          ic_launcher.webp
+        values/
+          colors.xml
+          strings.xml
+          themes.xml
+        xml/
+          backup_rules.xml
+          data_extraction_rules.xml
+      AndroidManifest.xml
+    test/
+      java/
+        com/
+          example/
+            marcia/
+              ExampleUnitTest.kt
+  .gitignore
+  build.gradle.kts
+gradle/
+  wrapper/
+    gradle-wrapper.jar
+    gradle-wrapper.properties
+  gradle-daemon-jvm.properties
+  libs.versions.toml
+.gitignore
+build.gradle.kts
+gradle.properties
+gradlew
+gradlew.bat
+README.md
+settings.gradle.kts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/src/androidTest/java/com/example/marcia/ExampleInstrumentedTest.kt">
+package com.example.marcia
+
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
+
+import org.junit.Test
+import org.junit.runner.RunWith
+
+import org.junit.Assert.*
+
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+@RunWith(AndroidJUnit4::class)
+class ExampleInstrumentedTest {
+    @Test
+    fun useAppContext() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.example.marcia", appContext.packageName)
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/data/Producto.kt">
+package com.example.marcia.data
+
+/**
+ * Modelo de datos que representa un Producto disponible para la venta en el salón.
+ */
+data class Producto(
+    val id: String,          // Identificador único del producto
+    val nombre: String,      // Nombre comercial (ej: "Shampoo reparador")
+    val precio: Double,      // Precio unitario
+    val stock: Int,          // Cantidad disponible en stock
+    val imagenResId: Int     // Referencia al recurso drawable de la imagen
+)
+</file>
+
+<file path="app/src/main/java/com/example/marcia/data/Servicio.kt">
+package com.example.marcia.data
+
+data class Servicio(
+    val id: Int,
+    var nombre: String,
+    var precio: String,
+    var duracion: String,
+    var descripcion: String,
+    var categoria: String = "General",
+    var personal: String = ""
+)
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Finanzas/FinanzasScreen.kt">
+package com.example.marcia.ui.screen
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.example.marcia.ui.screen.Finanzas.RegistrarComprobanteScreen
+import com.example.marcia.ui.theme.Success
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FinanzasScreen() {
+    // Variable de estado para controlar la visibilidad del modal de Gasto
+    var mostrarModalGasto by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            item {
+                BalanceHeroCard("$184.500", "+$242.000", "-$57.500")
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { mostrarModalGasto = true }, // <- Se activa el Modal aquí
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Text("Registrar Comprobante de Gasto")
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Text("Movimientos de Hoy", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            item {
+                TransaccionItem("Cobro", "Limpieza Facial Profunda", "+$28.500", "17:15 hs")
+                Spacer(modifier = Modifier.height(8.dp))
+                TransaccionItem("Gasto", "Reposición Ampollas Hial...", "-$32.000", "15:40 hs")
+            }
+        }
+
+        // Modal tipo Bottom Sheet para registrar el comprobante
+        if (mostrarModalGasto) {
+            ModalBottomSheet(
+                onDismissRequest = { mostrarModalGasto = false },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f), // Fondo oscurecido
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                RegistrarComprobanteScreen(
+                    onDismiss = { mostrarModalGasto = false }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BalanceHeroCard(neto: String, ingresos: String, gastos: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text("GANANCIA NETA DE HOY", style = MaterialTheme.typography.labelSmall)
+            Text(neto, style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column {
+                    Text("Ingresos", style = MaterialTheme.typography.labelSmall)
+                    Text(ingresos, style = MaterialTheme.typography.titleMedium, color = Success)
+                }
+                Column {
+                    Text("Gastos", style = MaterialTheme.typography.labelSmall)
+                    Text(gastos, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.secondary)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TransaccionItem(type: String, desc: String, amount: String, time: String) {
+    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+        Row(
+            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(type, style = MaterialTheme.typography.labelSmall)
+                Text(desc, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+            }
+            Column(horizontalAlignment = androidx.compose.ui.Alignment.End) {
+                Text(amount, style = MaterialTheme.typography.titleMedium)
+                Text(time, style = MaterialTheme.typography.labelSmall)
+            }
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Finanzas/RegistrarComprobanteScreen.kt">
+package com.example.marcia.ui.screen.Finanzas
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun RegistrarComprobanteScreen(onDismiss: () -> Unit = {}) {
+    var monto by remember { mutableStateOf("") }
+    var proveedor by remember { mutableStateOf("") }
+
+    // Estados para el Dropdown de Categoría
+    var expandedCategoria by remember { mutableStateOf(false) }
+    var categoriaSeleccionada by remember { mutableStateOf("Insumos de estética y aparatología") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Encabezado del Modal
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Icono circular
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Receipt,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Text(
+                    text = "Nuevo Comprobante",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            IconButton(onClick = onDismiss) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Cerrar",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
+
+        // Monto del Gasto
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = "MONTO DEL GASTO (ARS)",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
+                value = monto,
+                onValueChange = { monto = it },
+                placeholder = { Text("0.00", color = Color.Gray) },
+                singleLine = true,
+                leadingIcon = {
+                    Text("$", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.secondary)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+        }
+
+        // Categoría de Gasto
+        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = "CATEGORÍA DE GASTO",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
+            ExposedDropdownMenuBox(expanded = expandedCategoria, onExpandedChange = { expandedCategoria = !expandedCategoria }) {
+                TextField(
+                    value = categoriaSeleccionada,
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCategoria) },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+                // Opciones del Dropdown (ejemplo)
+                ExposedDropdownMenu(
+                    expanded = expandedCategoria,
+                    onDismissRequest = { expandedCategoria = false }
+                ) {
+                    DropdownMenuItem(text = { Text("Insumos de estética y aparatología") }, onClick = { categoriaSeleccionada = "Insumos de estética y aparatología"; expandedCategoria = false })
+                    DropdownMenuItem(text = { Text("Cosméticos & Serums de Cabina") }, onClick = { categoriaSeleccionada = "Cosméticos & Serums de Cabina"; expandedCategoria = false })
+                    DropdownMenuItem(text = { Text("Servicios (Luz, Agua, Software)") }, onClick = { categoriaSeleccionada = "Servicios (Luz, Agua, Software)"; expandedCategoria = false })
+                }
+            }
+        }
+
+        // Proveedor o Comercio
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = "PROVEEDOR O COMERCIO",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
+                value = proveedor,
+                onValueChange = { proveedor = it },
+                placeholder = { Text("Ej: Laboratorio Lidherma, Farmacia...", color = Color.Gray) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+        }
+
+        // Adjuntar Foto / Ticket
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = "FOTO DEL COMPROBANTE O FACTURA",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
+                    .clickable { /* Lógica para abrir cámara o galería */ }
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.PhotoCamera,
+                        contentDescription = "Cámara",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        "Tomar foto o subir archivo",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        "JPG, PNG o PDF hasta 10MB",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Botón Guardar
+        Button(
+            onClick = { /* Lógica de guardado */ onDismiss() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        ) {
+            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Confirmar y Guardar Gasto", style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Login/login.kt">
+package com.example.marcia.ui.screen
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import com.example.loginbasico.ui.ViewModel.LoginViewModel
+
+@Composable
+fun LoginScreen(loginViewModel: LoginViewModel, onLoginSuccess: () -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Marcia Salón de Belleza", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Panel de Administración", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = loginViewModel.email,
+            onValueChange = {
+                loginViewModel.email = it
+                loginViewModel.clearError()
+            },
+            label = { Text("Correo electrónico") },
+            isError = loginViewModel.errorMessage.isNotEmpty(),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = loginViewModel.password,
+            onValueChange = {
+                loginViewModel.password = it
+                loginViewModel.clearError()
+            },
+            label = { Text("Contraseña") },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = loginViewModel.errorMessage.isNotEmpty(),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        if (loginViewModel.errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = loginViewModel.errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = {
+                if (loginViewModel.validateLogin()) {
+                    onLoginSuccess() }
+            },
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text("Iniciar Sesión")
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenCarrito.kt">
+package com.example.marcia.ui.screen.productos
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.marcia.ui.viewModel.ItemCarrito
+import com.example.marcia.ui.viewModel.ProductosViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CarritoScreen(
+    viewModel: ProductosViewModel,
+    onVolverClick: () -> Unit = {},
+    onVentaExitosa: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Detalle de Venta y Cobro 💳") }
+            )
+        }
+    ) { innerPadding ->
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+
+            // Si el carrito está vacío, mostramos un mensaje descriptivo
+            if (viewModel.carrito.isEmpty()) {
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "El carrito está vacío 🛒",
+                        fontSize = 18.sp,
+                        color = Color.Gray
+                    )
+                } // Fin de Box vacío
+
+            } else {
+
+                // Título del listado
+                Text(
+                    text = "Productos a cobrar",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Lista de productos agregados con sus controles de cantidad
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(viewModel.carrito) { item ->
+                        ItemCarritoCard(
+                            item = item,
+                            onSumar = { viewModel.incrementarCantidad(item) },
+                            onRestar = { viewModel.decrementarCantidad(item) },
+                            onEliminar = { viewModel.eliminarDelCarrito(item) }
+                        )
+                    } // Fin de items
+                } // Fin de LazyColumn
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Selección de Medio de Pago
+                Text(
+                    text = "Medio de Pago",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Opciones de medio de pago
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    viewModel.mediosPagoDisponibles.forEach { medio ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.seleccionarMedioPago(medio) }
+                                .padding(vertical = 4.dp)
+                        ) {
+                            RadioButton(
+                                selected = (medio == viewModel.medioPagoSeleccionado),
+                                onClick = { viewModel.seleccionarMedioPago(medio) }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = medio)
+                        } // Fin de Row medio de pago
+                    } // Fin de forEach
+                } // Fin de Column de medios de pago
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Resumen final de cobro
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "Total Final:", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "$ ${viewModel.totalVenta}",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        } // Fin de Row de Total
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Botón para Confirmar Venta
+                        Button(
+                            onClick = {
+                                if (viewModel.finalizarVenta()) {
+                                    onVentaExitosa()
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Confirmar y Cobrar")
+                        } // Fin de Button Confirmar
+
+                    } // Fin de Column interna del Card
+                } // Fin de Card Resumen
+
+            } // Fin del else (carrito con items)
+
+        } // Fin de Column principal
+    } // Fin de Scaffold
+} // Fin de CarritoScreen
+
+/**
+ * Tarjeta individual para ajustar cantidades de un producto en el carrito.
+ */
+@Composable
+fun ItemCarritoCard(
+    item: ItemCarrito,
+    onSumar: () -> Unit,
+    onRestar: () -> Unit,
+    onEliminar: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            // Información del producto y subtotal
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.producto.nombre,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Unitario: $ ${item.producto.precio}",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = "Subtotal: $ ${item.producto.precio * item.cantidad}",
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            } // Fin de Column info
+
+            // Controles de incremento / decremento
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onRestar,
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    Text("-")
+                }
+
+                Text(
+                    text = "${item.cantidad}",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 6.dp)
+                )
+
+                OutlinedButton(
+                    onClick = onSumar,
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    Text("+")
+                }
+            } // Fin de Row controles
+
+        } // Fin de Row principal
+    } // Fin de Card
+} // Fin de ItemCarritoCard
+
+/**
+ * Vista previa para verificar el diseño en la solapa Split/Design sin compilar en emulador.
+ */
+@Suppress("ViewModelConstructorInComposable")
+@Preview(showBackground = true)
+@Composable
+fun CarritoScreenPreview() {
+    val viewModelPrueba = ProductosViewModel()
+    // Agregamos un producto de prueba para ver el renderizado
+    viewModelPrueba.agregarAlCarrito(
+        com.example.marcia.data.Producto("1", "Shampoo Especial", 12500.0, 10, 0)
+    )
+
+    CarritoScreen(viewModel = viewModelPrueba)
+} // Fin de CarritoScreenPreview
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenCompraConfirmada.kt">
+package com.example.marcia.ui.screen.productos
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CompraConfirmadaScreen(
+    totalCobrado: Double,
+    medioPago: String,
+    onVolverAlCatalogo: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Scaffold provee la estructura visual de la pantalla
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Venta Exitosa ✅") }
+            )
+        }
+    ) { innerPadding ->
+
+        // Contenedor principal centrado vertical y horizontalmente
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            // Ícono o emoji representativo de éxito grande
+            Text(
+                text = "🎉",
+                fontSize = 64.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Título principal de confirmación
+            Text(
+                text = "¡Cobro realizado con éxito!",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtítulo aclaratorio
+            Text(
+                text = "La transacción se registró correctamente en el sistema del salón.",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Tarjeta con el resumen de la operación
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Medio de pago:")
+                        Text(text = medioPago, fontWeight = FontWeight.Bold)
+                    } // Fin de Row medio de pago
+
+                    Divider()
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Total cobrado:", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "$ $totalCobrado",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 18.sp
+                        )
+                    } // Fin de Row total
+                } // Fin de Column interna de la tarjeta
+            } // Fin de Card de resumen
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Botón para volver al catálogo y arrancar de nuevo
+            Button(
+                onClick = onVolverAlCatalogo,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Nueva Venta / Volver al Catálogo")
+            } // Fin de Button volver
+
+        } // Fin de Column principal
+    } // Fin de Scaffold
+} // Fin de CompraConfirmadaScreen
+
+/**
+ * Vista previa para verificar el diseño de éxito en el IDE sin compilar en el emulador.
+ */
+@Preview(showBackground = true)
+@Composable
+fun CompraConfirmadaScreenPreview() {
+    CompraConfirmadaScreen(
+        totalCobrado = 23500.0,
+        medioPago = "Efectivo",
+        onVolverAlCatalogo = {}
+    )
+} // Fin de CompraConfirmadaScreenPreview
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenDetalleProducto.kt">
+package com.example.marcia.ui.screen.productos
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.marcia.data.Producto
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetalleProductoScreen(
+    producto: Producto,
+    onVolverClick: () -> Unit,
+    onAgregarAlCarrito: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Scaffold provee la estructura visual estándar de la pantalla
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Detalle del Producto 📦") },
+                navigationIcon = {
+                    // Botón para volver a la pantalla anterior
+                    TextButton(onClick = onVolverClick) {
+                        Text("← Volver")
+                    } // Fin de TextButton volver
+                }
+            )
+        }
+    ) { innerPadding ->
+
+        // Contenedor principal en columna con separación entre elementos
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            // Bloque superior con toda la información del producto
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                // Nombre principal del producto
+                Text(
+                    text = producto.nombre,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                // Precio destacado
+                Text(
+                    text = "Precio: $ ${producto.precio}",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                // Tarjeta informativa con el stock disponible
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Stock disponible:",
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "${producto.stock} unidades en el salón",
+                            fontSize = 16.sp
+                        )
+                    } // Fin de Column interna
+                } // Fin de Card de stock
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Descripción conceptual del producto
+                Text(
+                    text = "Descripción:",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+
+                Text(
+                    text = "Producto profesional seleccionado para el cuidado y tratamiento capilar en el salón de belleza Marcia. Ideal para aplicación en servicios o venta directa.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+            } // Fin de Column de información
+
+            // Botón inferior para sumar el producto al carrito desde el detalle
+            Button(
+                onClick = onAgregarAlCarrito,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Agregar al Carrito 🛒")
+            } // Fin de Button agregar
+
+        } // Fin de Column principal
+    } // Fin de Scaffold
+} // Fin de DetalleProductoScreen
+
+/**
+ * Vista previa para testear el diseño del detalle en el IDE sin compilar en el emulador.
+ */
+@Preview(showBackground = true)
+@Composable
+fun DetalleProductoScreenPreview() {
+    // Objeto de prueba para visualizar la interfaz
+    val productoPrueba = Producto(
+        id = "1",
+        nombre = "Shampoo Especial Profesional",
+        precio = 12500.0,
+        stock = 10,
+        imagenResId = 0
+    )
+
+    DetalleProductoScreen(
+        producto = productoPrueba,
+        onVolverClick = {},
+        onAgregarAlCarrito = {}
+    )
+} // Fin de DetalleProductoScreenPreview
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/productos/ScreenProductos.kt">
+package com.example.marcia.ui.screen.productos
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.marcia.data.Producto
+import com.example.marcia.ui.viewModel.ProductosViewModel
+
+
+
+/**
+ * @Preview: Permite renderizar la pantalla directamente en la pestaña "Design" o "Split"
+ * de tu entorno de desarrollo, sin necesidad de compilar la app en un celular ni en un emulador.
+ */
+@Preview(showBackground = true)
+@Composable
+fun ProductosScreenPreview() {
+    // Instanciamos el ViewModel para alimentar la vista previa con datos de prueba
+    @Suppress("ViewModelConstructorInComposable")
+    val viewModelPrueba = ProductosViewModel()
+
+    // Llamamos a nuestra pantalla principal pasándole el ViewModel
+    ProductosScreen(viewModel = viewModelPrueba)
+} // Fin de ProductosScreenPreview
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProductosScreen(
+    viewModel: ProductosViewModel,
+    modifier: Modifier = Modifier
+) {
+    // Scaffold provee la estructura visual básica de la pantalla
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Venta de Productos 🛍️") }
+            )
+        }
+    )
+    { innerPadding ->
+
+        // Contenedor principal en columna
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+
+            // Título de la sección
+            Text(
+                text = "Catálogo disponible",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // LazyColumn para renderizar la lista de productos de forma eficiente
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(viewModel.listaProductos) { producto ->
+                    ProductoItemCard(
+                        producto = producto,
+                        onAgregarClick = {
+                            viewModel.agregarAlCarrito(producto)
+                        }
+                    )
+                } // Fin de items
+            } // Fin de LazyColumn
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Tarjeta inferior que funciona como resumen del carrito y cobro
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = "Productos en carrito: ${viewModel.carrito.size}")
+
+                    Text(
+                        text = "Total a Pagar: $ ${viewModel.totalVenta}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Botón para concretar la venta
+                    Button(
+                        onClick = {
+                            viewModel.finalizarVenta()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = viewModel.carrito.isNotEmpty()
+                    ) {
+                        Text(text = "Finalizar Venta")
+                    } // Fin de Button
+
+                } // Fin de Column interna del Card
+            } // Fin de Card de resumen
+
+        } // Fin de Column principal
+    } // Fin de Scaffold
+} // Fin de ProductosScreen
+
+/**
+ * Componente visual individual (Card) para cada producto del catálogo.
+ */
+@Composable
+fun ProductoItemCard(
+    producto: Producto,
+    onAgregarClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            // Columna con detalles del producto (Nombre, precio, stock)
+            Column {
+                Text(
+                    text = producto.nombre,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Precio: $ ${producto.precio}",
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Stock: ${producto.stock}",
+                    fontSize = 12.sp
+                )
+            } // Fin de Column de detalles
+
+            // Botón para agregar al carrito
+            Button(
+                onClick = onAgregarClick
+            ) {
+                Text("Agregar")
+            } // Fin de Button agregar
+
+        } // Fin de Row
+    } // Fin de Card de producto
+} // Fin de ProductoItemCard
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Turnos/TurnosScreen.kt">
+package com.example.marcia.ui.screen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun TurnosScreen() {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(16.dp)
+    ) {
+        item {
+            TurnosHeroCard(date = "Jueves, 24 Octubre", occupancy = "85% ocupación en cabinas", totalTurnos = 18, enCurso = 3)
+            Spacer(modifier = Modifier.height(16.dp))
+            TurnosSearchBarAndFilters()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            TurnoCardItem(
+                time = "09:30 - 10:45 AM",
+                duration = "75 min",
+                clientName = "Valentina Rossi",
+                serviceName = "Limpieza Facial Profunda + Hidratación",
+                therapist = "Dra. Elena Silva",
+                status = "En curso",
+                room = "Cabina 02"
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            TurnoCardItem(
+                time = "12:15 - 01:30 PM",
+                duration = "75 min",
+                clientName = "Sofía Méndez",
+                serviceName = "Masaje Descontracturante & Piedras...",
+                therapist = "Lic. Mariana Ruiz",
+                status = "Confirmado",
+                room = "VIP Oro"
+            )
+        }
+    }
+}
+
+@Composable
+fun TurnosHeroCard(date: String, occupancy: String, totalTurnos: Int, enCurso: Int) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Text("JORNADA ACTIVA", color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.labelSmall)
+                Text("$totalTurnos Turnos Hoy", color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.labelSmall)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(date, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.headlineMedium)
+            Text(occupancy, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+@Composable
+fun TurnosSearchBarAndFilters() {
+    Column {
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            placeholder = { Text("Buscar cliente, servicio o profesional...") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
+        )
+        // Aquí iría un LazyRow con los chips de filtrado (Todos, En curso, Confirmados)[cite: 7]
+    }
+}
+
+@Composable
+fun TurnoCardItem(time: String, duration: String, clientName: String, serviceName: String, therapist: String, status: String, room: String) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Text("$time • $duration", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                Text(status, style = MaterialTheme.typography.labelSmall)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(clientName, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+            Text(serviceName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(therapist, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/theme/Type.kt">
+package com.example.marcia.ui.theme
+
+import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
+// Set of Material typography styles to start with
+val Typography = Typography(
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    )
+    /* Other default text styles to override
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    )
+    */
+)
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/viewmodel/ProductosViewModel.kt">
+package com.example.marcia.ui.viewModel
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import com.example.marcia.data.Producto
+
+/**
+ * Modelo interno para representar un elemento dentro del carrito con su cantidad.
+ */
+data class ItemCarrito(
+    val producto: Producto,
+    var cantidad: Int
+)
+
+class ProductosViewModel : ViewModel() {
+
+    // Lista de productos en catálogo
+    var listaProductos by mutableStateOf(
+        listOf(
+            Producto("1", "Shampoo Especial", 12500.0, 10, 0),
+            Producto("2", "Acondicionador Brillo", 11000.0, 5, 0),
+            Producto("3", "Crema para peinar", 9500.0, 8, 0),
+            Producto("4", "Aceite de Argan", 15000.0, 3, 0)
+        )
+    )
+        private set
+
+    // Lista de ítems en el carrito de compras
+    var carrito by mutableStateOf(listOf<ItemCarrito>())
+        private set
+
+    // Medio de pago seleccionado (Efectivo, Transferencia, Tarjeta)
+    var medioPagoSeleccionado by mutableStateOf("Efectivo")
+        private set
+
+    // Opciones disponibles de medio de pago
+    val mediosPagoDisponibles = listOf("Efectivo", "Transferencia", "Tarjeta de Débito/Crédito")
+
+    /**
+     * Calcula el monto total acumulado del carrito dinámicamente.
+     */
+    val totalVenta: Double
+        get() = carrito.sumOf { it.producto.precio * it.cantidad }
+
+    /**
+     * Agrega un producto al carrito o incrementa su cantidad si ya existía.
+     */
+    fun agregarAlCarrito(producto: Producto) {
+        val itemExistente = carrito.find { it.producto.id == producto.id }
+        if (itemExistente != null) {
+            // Si ya existe, creamos una nueva lista incrementando la cantidad del ítem
+            carrito = carrito.map {
+                if (it.producto.id == producto.id) {
+                    it.copy(cantidad = it.cantidad + 1)
+                } else {
+                    it
+                }
+            }
+        } else {
+            // Si no existe, lo sumamos a la lista con cantidad 1
+            carrito = carrito + ItemCarrito(producto = producto, cantidad = 1)
+        }
+    } // Fin de agregarAlCarrito
+
+    /**
+     * Incrementa la cantidad de un producto en el carrito.
+     */
+    fun incrementarCantidad(item: ItemCarrito) {
+        carrito = carrito.map {
+            if (it.producto.id == item.producto.id) {
+                it.copy(cantidad = it.cantidad + 1)
+            } else {
+                it
+            }
+        }
+    } // Fin de incrementarCantidad
+
+    /**
+     * Decrementa la cantidad de un producto o lo elimina si llega a cero.
+     */
+    fun decrementarCantidad(item: ItemCarrito) {
+        if (item.cantidad > 1) {
+            carrito = carrito.map {
+                if (it.producto.id == item.producto.id) {
+                    it.copy(cantidad = it.cantidad - 1)
+                } else {
+                    it
+                }
+            }
+        } else {
+            // Si la cantidad es 1 y decrementa, se remueve del carrito
+            carrito = carrito.filter { it.producto.id != item.producto.id }
+        }
+    } // Fin de decrementarCantidad
+
+    /**
+     * Elimina por completo un ítem del carrito.
+     */
+    fun eliminarDelCarrito(item: ItemCarrito) {
+        carrito = carrito.filter { it.producto.id != item.producto.id }
+    } // Fin de eliminarDelCarrito
+
+    /**
+     * Actualiza el medio de pago seleccionado.
+     */
+    fun seleccionarMedioPago(medio: String) {
+        medioPagoSeleccionado = medio
+    } // Fin de seleccionarMedioPago
+
+    /**
+     * Simula el cobro y cierre de la venta.
+     */
+    fun finalizarVenta(): Boolean {
+        if (carrito.isEmpty()) {
+            return false
+        } else {
+            // Lógica futura para guardar en BD/API
+            carrito = emptyList()
+            return true
+        }
+    } // Fin de finalizarVenta
+
+} // Fin de ProductosViewModel
+</file>
+
+<file path="app/src/main/keepRules/rules.keep">
+# Add project specific R8 rules here.
+# AGP will combine all keep rule files in src/main/keepRules to pass to R8
+#
+# For more details, see
+#   https://d.android.com/r/tools/r8/keep-rules
+
+# If your project uses WebView with JS, uncomment the following
+# and specify the fully qualified class name to the JavaScript interface
+# class:
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#   public *;
+#}
+</file>
+
+<file path="app/src/main/res/drawable/ic_launcher_background.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#3DDC84"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M9,0L9,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,0L19,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M29,0L29,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M39,0L39,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M49,0L49,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M59,0L59,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M69,0L69,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M79,0L79,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M89,0L89,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M99,0L99,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,9L108,9"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,19L108,19"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,29L108,29"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,39L108,39"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,49L108,49"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,59L108,59"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,69L108,69"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,79L108,79"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,89L108,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,99L108,99"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,29L89,29"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,39L89,39"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,49L89,49"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,59L89,59"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,69L89,69"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,79L89,79"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M29,19L29,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M39,19L39,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M49,19L49,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M59,19L59,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M69,19L69,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M79,19L79,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+</vector>
+</file>
+
+<file path="app/src/main/res/drawable/ic_launcher_foreground.xml">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="85.84757"
+                android:endY="92.4963"
+                android:startX="42.9492"
+                android:startY="49.59793"
+                android:type="linear">
+                <item
+                    android:color="#44000000"
+                    android:offset="0.0" />
+                <item
+                    android:color="#00000000"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
+        android:strokeWidth="1"
+        android:strokeColor="#00000000" />
+</vector>
+</file>
+
+<file path="app/src/main/res/mipmap-anydpi/ic_launcher_round.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
+</file>
+
+<file path="app/src/main/res/mipmap-anydpi/ic_launcher.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
+</file>
+
+<file path="app/src/main/res/values/colors.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
+</file>
+
+<file path="app/src/main/res/values/strings.xml">
+<resources>
+    <string name="app_name">Marcia - Salon de belleza</string>
+</resources>
+</file>
+
+<file path="app/src/main/res/values/themes.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MarciaSalonDeBelleza" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
+</file>
+
+<file path="app/src/main/res/xml/backup_rules.xml">
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample backup rules file; uncomment and customize as necessary.
+   See https://developer.android.com/guide/topics/data/autobackup
+   for details.
+   Note: This file is ignored for devices older than API 31
+   See https://developer.android.com/about/versions/12/backup-restore
+-->
+<full-backup-content>
+    <!--
+   <include domain="sharedpref" path="."/>
+   <exclude domain="sharedpref" path="device.xml"/>
+-->
+</full-backup-content>
+</file>
+
+<file path="app/src/main/res/xml/data_extraction_rules.xml">
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample data extraction rules file; uncomment and customize as necessary.
+   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   for details.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <include .../>
+        <exclude .../>
+        -->
+    </cloud-backup>
+    <!--
+    <device-transfer>
+        <include .../>
+        <exclude .../>
+    </device-transfer>
+    -->
+</data-extraction-rules>
+</file>
+
+<file path="app/src/main/AndroidManifest.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MarciaSalonDeBelleza">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MarciaSalonDeBelleza"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+</file>
+
+<file path="app/src/test/java/com/example/marcia/ExampleUnitTest.kt">
+package com.example.marcia
+
+import org.junit.Test
+
+import org.junit.Assert.*
+
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+class ExampleUnitTest {
+    @Test
+    fun addition_isCorrect() {
+        assertEquals(4, 2 + 2)
+    }
+}
+</file>
+
+<file path="app/.gitignore">
+/build
+</file>
+
+<file path="gradle/wrapper/gradle-wrapper.properties">
+#Wed Oct 14 10:56:37 GMT-03:00 2026
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionSha256Sum=553c78f50dafcd54d65b9a444649057857469edf836431389695608536d6b746
+distributionUrl=https\://services.gradle.org/distributions/gradle-9.5.0-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+</file>
+
+<file path="gradle/gradle-daemon-jvm.properties">
+#This file is generated by updateDaemonJvm
+toolchainUrl.FREE_BSD.AARCH64=https\://api.foojay.io/disco/v3.0/ids/cf726b4a1c84b50457225f9bba6d7650/redirect
+toolchainUrl.FREE_BSD.X86_64=https\://api.foojay.io/disco/v3.0/ids/fa1e318c287360478e3c83a9a3ef1007/redirect
+toolchainUrl.LINUX.AARCH64=https\://api.foojay.io/disco/v3.0/ids/cf726b4a1c84b50457225f9bba6d7650/redirect
+toolchainUrl.LINUX.X86_64=https\://api.foojay.io/disco/v3.0/ids/fa1e318c287360478e3c83a9a3ef1007/redirect
+toolchainUrl.MAC_OS.AARCH64=https\://api.foojay.io/disco/v3.0/ids/c2dd35c9d0aaf0ba6ad0791320f99dfc/redirect
+toolchainUrl.MAC_OS.X86_64=https\://api.foojay.io/disco/v3.0/ids/e5810bd7fd1f8a586644409d395a7e55/redirect
+toolchainUrl.UNIX.AARCH64=https\://api.foojay.io/disco/v3.0/ids/cf726b4a1c84b50457225f9bba6d7650/redirect
+toolchainUrl.UNIX.X86_64=https\://api.foojay.io/disco/v3.0/ids/fa1e318c287360478e3c83a9a3ef1007/redirect
+toolchainUrl.WINDOWS.AARCH64=https\://api.foojay.io/disco/v3.0/ids/7b3c4877c0749019e6805bb61e421497/redirect
+toolchainUrl.WINDOWS.X86_64=https\://api.foojay.io/disco/v3.0/ids/d76df094a9cbbabd3b08251f9e61444a/redirect
+toolchainVersion=25
+</file>
+
+<file path=".gitignore">
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+</file>
+
+<file path="gradle.properties">
+# Project-wide Gradle settings.
+# IDE (e.g. Android Studio) users:
+# Gradle settings configured through the IDE *will override*
+# any settings specified in this file.
+# For more details on how to configure your build environment visit
+# http://www.gradle.org/docs/current/userguide/build_environment.html
+# Specifies the JVM arguments used for the daemon process.
+# The setting is particularly useful for tweaking memory settings.
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+# When configured, Gradle will run in incubating parallel mode.
+# This option should only be used with decoupled projects. For more details, visit
+# https://developer.android.com/r/tools/gradle-multi-project-decoupled-projects
+# org.gradle.parallel=true
+# When enabled, the Configuration Cache allows Gradle to skip the configuration
+# phase entirely if nothing that affects the build configuration (such as build scripts)
+# has changed. Additionally, Gradle applies performance optimizations to task execution.
+org.gradle.configuration-cache=true
+# Kotlin code style for this project: "official" or "obsolete":
+kotlin.code.style=official
+</file>
+
+<file path="gradlew">
+#!/bin/sh
+
+#
+# Copyright © 2015 the original authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+##############################################################################
+#
+#   Gradle start up script for POSIX generated by Gradle.
+#
+#   Important for running:
+#
+#   (1) You need a POSIX-compliant shell to run this script. If your /bin/sh is
+#       noncompliant, but you have some other compliant shell such as ksh or
+#       bash, then to run this script, type that shell name before the whole
+#       command line, like:
+#
+#           ksh Gradle
+#
+#       Busybox and similar reduced shells will NOT work, because this script
+#       requires all of these POSIX shell features:
+#         * functions;
+#         * expansions «$var», «${var}», «${var:-default}», «${var+SET}»,
+#           «${var#prefix}», «${var%suffix}», and «$( cmd )»;
+#         * compound commands having a testable exit status, especially «case»;
+#         * various built-in commands including «command», «set», and «ulimit».
+#
+#   Important for patching:
+#
+#   (2) This script targets any POSIX shell, so it avoids extensions provided
+#       by Bash, Ksh, etc; in particular arrays are avoided.
+#
+#       The "traditional" practice of packing multiple parameters into a
+#       space-separated string is a well documented source of bugs and security
+#       problems, so this is (mostly) avoided, by progressively accumulating
+#       options in "$@", and eventually passing that to Java.
+#
+#       Where the inherited environment variables (DEFAULT_JVM_OPTS, JAVA_OPTS,
+#       and GRADLE_OPTS) rely on word-splitting, this is performed explicitly;
+#       see the in-line comments for details.
+#
+#       There are tweaks for specific operating systems such as AIX, CygWin,
+#       Darwin, MinGW, and NonStop.
+#
+#   (3) This script is generated from the Groovy template
+#       https://github.com/gradle/gradle/blob/HEAD/platforms/jvm/plugins-application/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
+#       within the Gradle project.
+#
+#       You can find Gradle at https://github.com/gradle/gradle/.
+#
+##############################################################################
+
+# Attempt to set APP_HOME
+
+# Resolve links: $0 may be a link
+app_path=$0
+
+# Need this for daisy-chained symlinks.
+while
+    APP_HOME=${app_path%"${app_path##*/}"}  # leaves a trailing /; empty if no leading path
+    [ -h "$app_path" ]
+do
+    ls=$( ls -ld "$app_path" )
+    link=${ls#*' -> '}
+    case $link in             #(
+      /*)   app_path=$link ;; #(
+      *)    app_path=$APP_HOME$link ;;
+    esac
+done
+
+# This is normally unused
+# shellcheck disable=SC2034
+APP_BASE_NAME=${0##*/}
+# Discard cd standard output in case $CDPATH is set (https://github.com/gradle/gradle/issues/25036)
+APP_HOME=$( cd -P "${APP_HOME:-./}" > /dev/null && printf '%s\n' "$PWD" ) || exit
+
+# Use the maximum available, or set MAX_FD != -1 to use that value.
+MAX_FD=maximum
+
+warn () {
+    echo "$*"
+} >&2
+
+die () {
+    echo
+    echo "$*"
+    echo
+    exit 1
+} >&2
+
+# OS specific support (must be 'true' or 'false').
+cygwin=false
+msys=false
+darwin=false
+nonstop=false
+case "$( uname )" in                #(
+  CYGWIN* )         cygwin=true  ;; #(
+  Darwin* )         darwin=true  ;; #(
+  MSYS* | MINGW* )  msys=true    ;; #(
+  NONSTOP* )        nonstop=true ;;
+esac
+
+CLASSPATH="\\\"\\\""
+
+
+# Determine the Java command to use to start the JVM.
+if [ -n "$JAVA_HOME" ] ; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+        # IBM's JDK on AIX uses strange locations for the executables
+        JAVACMD=$JAVA_HOME/jre/sh/java
+    else
+        JAVACMD=$JAVA_HOME/bin/java
+    fi
+    if [ ! -x "$JAVACMD" ] ; then
+        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
+
+Please set the JAVA_HOME variable in your environment to match the
+location of your Java installation."
+    fi
+else
+    JAVACMD=java
+    if ! command -v java >/dev/null 2>&1
+    then
+        die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+
+Please set the JAVA_HOME variable in your environment to match the
+location of your Java installation."
+    fi
+fi
+
+# Increase the maximum file descriptors if we can.
+if ! "$cygwin" && ! "$darwin" && ! "$nonstop" ; then
+    case $MAX_FD in #(
+      max*)
+        # In POSIX sh, ulimit -H is undefined. That's why the result is checked to see if it worked.
+        # shellcheck disable=SC2039,SC3045
+        MAX_FD=$( ulimit -H -n ) ||
+            warn "Could not query maximum file descriptor limit"
+    esac
+    case $MAX_FD in  #(
+      '' | soft) :;; #(
+      *)
+        # In POSIX sh, ulimit -n is undefined. That's why the result is checked to see if it worked.
+        # shellcheck disable=SC2039,SC3045
+        ulimit -n "$MAX_FD" ||
+            warn "Could not set maximum file descriptor limit to $MAX_FD"
+    esac
+fi
+
+# Collect all arguments for the java command, stacking in reverse order:
+#   * args from the command line
+#   * the main class name
+#   * -classpath
+#   * -D...appname settings
+#   * --module-path (only if needed)
+#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and GRADLE_OPTS environment variables.
+
+# For Cygwin or MSYS, switch paths to Windows format before running java
+if "$cygwin" || "$msys" ; then
+    APP_HOME=$( cygpath --path --mixed "$APP_HOME" )
+    CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
+
+    JAVACMD=$( cygpath --unix "$JAVACMD" )
+
+    # Now convert the arguments - kludge to limit ourselves to /bin/sh
+    for arg do
+        if
+            case $arg in                                #(
+              -*)   false ;;                            # don't mess with options #(
+              /?*)  t=${arg#/} t=/${t%%/*}              # looks like a POSIX filepath
+                    [ -e "$t" ] ;;                      #(
+              *)    false ;;
+            esac
+        then
+            arg=$( cygpath --path --ignore --mixed "$arg" )
+        fi
+        # Roll the args list around exactly as many times as the number of
+        # args, so each arg winds up back in the position where it started, but
+        # possibly modified.
+        #
+        # NB: a `for` loop captures its iteration list before it begins, so
+        # changing the positional parameters here affects neither the number of
+        # iterations, nor the values presented in `arg`.
+        shift                   # remove old arg
+        set -- "$@" "$arg"      # push replacement arg
+    done
+fi
+
+
+# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+
+# Collect all arguments for the java command:
+#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and optsEnvironmentVar are not allowed to contain shell fragments,
+#     and any embedded shellness will be escaped.
+#   * For example: A user cannot expect ${Hostname} to be expanded, as it is an environment variable and will be
+#     treated as '${Hostname}' itself on the command line.
+
+set -- \
+        "-Dorg.gradle.appname=$APP_BASE_NAME" \
+        -classpath "$CLASSPATH" \
+        -jar "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" \
+        "$@"
+
+# Stop when "xargs" is not available.
+if ! command -v xargs >/dev/null 2>&1
+then
+    die "xargs is not available"
+fi
+
+# Use "xargs" to parse quoted args.
+#
+# With -n1 it outputs one arg per line, with the quotes and backslashes removed.
+#
+# In Bash we could simply go:
+#
+#   readarray ARGS < <( xargs -n1 <<<"$var" ) &&
+#   set -- "${ARGS[@]}" "$@"
+#
+# but POSIX shell has neither arrays nor command substitution, so instead we
+# post-process each arg (as a line of input to sed) to backslash-escape any
+# character that might be a shell metacharacter, then use eval to reverse
+# that process (while maintaining the separation between arguments), and wrap
+# the whole thing up as a single "set" statement.
+#
+# This will of course break if any of these variables contains a newline or
+# an unmatched quote.
+#
+
+eval "set -- $(
+        printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
+        xargs -n1 |
+        sed ' s~[^-[:alnum:]+,./:=@_]~\\&~g; ' |
+        tr '\n' ' '
+    )" '"$@"'
+
+exec "$JAVACMD" "$@"
+</file>
+
+<file path="gradlew.bat">
+@rem
+@rem Copyright 2015 the original author or authors.
+@rem
+@rem Licensed under the Apache License, Version 2.0 (the "License");
+@rem you may not use this file except in compliance with the License.
+@rem You may obtain a copy of the License at
+@rem
+@rem      https://www.apache.org/licenses/LICENSE-2.0
+@rem
+@rem Unless required by applicable law or agreed to in writing, software
+@rem distributed under the License is distributed on an "AS IS" BASIS,
+@rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+@rem See the License for the specific language governing permissions and
+@rem limitations under the License.
+@rem
+@rem SPDX-License-Identifier: Apache-2.0
+@rem
+
+@if "%DEBUG%"=="" @echo off
+@rem ##########################################################################
+@rem
+@rem  Gradle startup script for Windows
+@rem
+@rem ##########################################################################
+
+@rem Set local scope for the variables with windows NT shell
+if "%OS%"=="Windows_NT" setlocal
+
+set DIRNAME=%~dp0
+if "%DIRNAME%"=="" set DIRNAME=.
+@rem This is normally unused
+set APP_BASE_NAME=%~n0
+set APP_HOME=%DIRNAME%
+
+@rem Resolve any "." and ".." in APP_HOME to make it shorter.
+for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
+
+@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
+
+@rem Find java.exe
+if defined JAVA_HOME goto findJavaFromJavaHome
+
+set JAVA_EXE=java.exe
+%JAVA_EXE% -version >NUL 2>&1
+if %ERRORLEVEL% equ 0 goto execute
+
+echo. 1>&2
+echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH. 1>&2
+echo. 1>&2
+echo Please set the JAVA_HOME variable in your environment to match the 1>&2
+echo location of your Java installation. 1>&2
+
+goto fail
+
+:findJavaFromJavaHome
+set JAVA_HOME=%JAVA_HOME:"=%
+set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+
+if exist "%JAVA_EXE%" goto execute
+
+echo. 1>&2
+echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME% 1>&2
+echo. 1>&2
+echo Please set the JAVA_HOME variable in your environment to match the 1>&2
+echo location of your Java installation. 1>&2
+
+goto fail
+
+:execute
+@rem Setup the command line
+
+set CLASSPATH=
+
+
+@rem Execute Gradle
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" -jar "%APP_HOME%\gradle\wrapper\gradle-wrapper.jar" %*
+
+:end
+@rem End local scope for the variables with windows NT shell
+if %ERRORLEVEL% equ 0 goto mainEnd
+
+:fail
+rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
+rem the _cmd.exe /c_ return code!
+set EXIT_CODE=%ERRORLEVEL%
+if %EXIT_CODE% equ 0 set EXIT_CODE=1
+if not ""=="%GRADLE_EXIT_CONSOLE%" exit %EXIT_CODE%
+exit /b %EXIT_CODE%
+
+:mainEnd
+if "%OS%"=="Windows_NT" endlocal
+
+:omega
+</file>
+
+<file path="settings.gradle.kts">
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Marcia - Salon de belleza"
+include(":app")
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Servicios/RegistrarServicioScreen.kt">
+package com.example.marcia.ui.screen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.marcia.data.Servicio
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FormularioServicioContent(
+    servicioState: Servicio,
+    tituloPanel: String,
+    iconoPanel: ImageVector? = null,
+    onNombreChange: (String) -> Unit,
+    onPrecioChange: (String) -> Unit,
+    onDuracionChange: (String) -> Unit,
+    onCategoriaChange: (String) -> Unit,
+    onDescripcionChange: (String) -> Unit,
+    onConfirmar: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    var expandedDuracion by remember { mutableStateOf(false) }
+    var expandedCategoria by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Encabezado
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (iconoPanel != null) {
+                        Icon(iconoPanel, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(20.dp))
+                    } else {
+                        Text("🌸", fontSize = 18.sp)
+                    }
+                }
+                Text(
+                    text = tituloPanel,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            IconButton(onClick = onDismiss) {
+                Icon(Icons.Default.Close, contentDescription = "Cerrar", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
+
+        CustomFormField(
+            label = "NOMBRE DEL TRATAMIENTO",
+            placeholder = "Ej: Ritual Corporal Relajante",
+            value = servicioState.nombre,
+            onValueChange = onNombreChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            CustomFormField(
+                label = "PRECIO (ARS)",
+                placeholder = "25000",
+                value = servicioState.precio,
+                onValueChange = onPrecioChange,
+                leadingIcon = { Text("$", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), //forzar teclado numérico
+                modifier = Modifier.weight(1f)
+            )
+
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("DURACIÓN (MIN)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                ExposedDropdownMenuBox(expanded = expandedDuracion, onExpandedChange = { expandedDuracion = !expandedDuracion }) {
+                    TextField(
+                        value = servicioState.duracion,
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDuracion) },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                            focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(expanded = expandedDuracion, onDismissRequest = { expandedDuracion = false }) {
+                        listOf("30 minutos", "45 minutos", "60 minutos", "90 minutos").forEach { opcion ->
+                            DropdownMenuItem(text = { Text(opcion) }, onClick = { onDuracionChange(opcion); expandedDuracion = false })
+                        }
+                    }
+                }
+            }
+        }
+
+        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("CATEGORÍA", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+            ExposedDropdownMenuBox(expanded = expandedCategoria, onExpandedChange = { expandedCategoria = !expandedCategoria }) {
+                TextField(
+                    value = servicioState.categoria,
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCategoria) },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(expanded = expandedCategoria, onDismissRequest = { expandedCategoria = false }) {
+                    listOf("Faciales", "Corporales", "Masajes").forEach { opcion ->
+                        DropdownMenuItem(text = { Text(opcion) }, onClick = { onCategoriaChange(opcion); expandedCategoria = false })
+                    }
+                }
+            }
+        }
+
+        CustomFormField(
+            label = "BENEFICIOS / DESCRIPCIÓN",
+            placeholder = "Resumen de técnicas...",
+            value = servicioState.descripcion,
+            onValueChange = onDescripcionChange,
+            singleLine = false,
+            minLines = 3,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = onConfirmar,
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        ) {
+            Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Confirmar y Guardar", style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomFormField(
+    label: String,
+    placeholder: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder, color = Color.Gray) },
+            singleLine = singleLine,
+            minLines = minLines,
+            leadingIcon = leadingIcon,
+            keyboardOptions = keyboardOptions, // Se aplica aquí
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
+        )
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Servicios/ServiciosScreen.kt">
+package com.example.marcia.ui.screen
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.marcia.data.Servicio
+import com.example.marcia.ui.viewmodel.ServiciosViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ServiciosScreen(
+    viewModel: ServiciosViewModel = viewModel()
+) {
+    var categoriaSeleccionada by remember { mutableStateOf("Todos") }
+    var mostrarModalRegistro by remember { mutableStateOf(false) }
+    var servicioParaEditar by remember { mutableStateOf<Servicio?>(null) }
+
+    // Nuevo estado para controlar el diálogo de confirmación
+    var servicioParaEliminar by remember { mutableStateOf<Servicio?>(null) }
+
+    val serviciosFiltrados = remember(categoriaSeleccionada, viewModel.servicios.toList()) {
+        if (categoriaSeleccionada == "Todos") viewModel.servicios
+        else viewModel.servicios.filter { it.categoria == categoriaSeleccionada }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            item {
+                Text("CATÁLOGO ACTIVO", style = MaterialTheme.typography.labelMedium)
+                Text("${viewModel.servicios.size} tratamientos", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.primary)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf("Todos", "Faciales", "Corporales").forEach { cat ->
+                        FilterChip(
+                            selected = categoriaSeleccionada == cat,
+                            onClick = { categoriaSeleccionada = cat },
+                            label = { Text(cat) }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            items(serviciosFiltrados, key = { it.id }) { servicio ->
+                ServicioCardItem(
+                    servicio = servicio,
+                    onEdit = {
+                        viewModel.seleccionarServicioParaEdicion(servicio)
+                        servicioParaEditar = servicio
+                    },
+                    onDelete = {
+                        // En lugar de borrar directamente, abrimos el diálogo de advertencia
+                        servicioParaEliminar = servicio
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item { Spacer(modifier = Modifier.height(80.dp)) }
+        }
+
+        ExtendedFloatingActionButton(
+            onClick = {
+                viewModel.prepararNuevoRegistro()
+                mostrarModalRegistro = true
+            },
+            text = { Text("Nuevo Servicio") },
+            icon = { Icon(Icons.Filled.Add, "Nuevo Servicio") },
+            shape = RoundedCornerShape(16.dp),
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+        )
+
+        // Modal para CREAR
+        if (mostrarModalRegistro) {
+            ModalBottomSheet(
+                onDismissRequest = { mostrarModalRegistro = false },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                FormularioServicioContent(
+                    servicioState = state,
+                    tituloPanel = "Añadir Nuevo Servicio",
+                    onNombreChange = viewModel::onNombreChange,
+                    onPrecioChange = viewModel::onPrecioChange,
+                    onDuracionChange = viewModel::onDuracionChange,
+                    onCategoriaChange = viewModel::onCategoriaChange,
+                    onDescripcionChange = viewModel::onDescripcionChange,
+                    onConfirmar = {
+                        viewModel.guardarNuevoServicio()
+                        mostrarModalRegistro = false
+                    },
+                    onDismiss = { mostrarModalRegistro = false }
+                )
+            }
+        }
+
+        // Modal para EDITAR
+        if (servicioParaEditar != null) {
+            ModalBottomSheet(
+                onDismissRequest = { servicioParaEditar = null },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                FormularioServicioContent(
+                    servicioState = state,
+                    tituloPanel = "Modificar Servicio",
+                    iconoPanel = Icons.Default.Spa,
+                    onNombreChange = viewModel::onNombreChange,
+                    onPrecioChange = viewModel::onPrecioChange,
+                    onDuracionChange = viewModel::onDuracionChange,
+                    onCategoriaChange = viewModel::onCategoriaChange,
+                    onDescripcionChange = viewModel::onDescripcionChange,
+                    onConfirmar = {
+                        viewModel.guardarEdicionServicio()
+                        servicioParaEditar = null
+                    },
+                    onDismiss = { servicioParaEditar = null }
+                )
+            }
+        }
+
+        // Diálogo de Confirmación para ELIMINAR
+        if (servicioParaEliminar != null) {
+            AlertDialog(
+                onDismissRequest = { servicioParaEliminar = null },
+                containerColor = MaterialTheme.colorScheme.surface,
+                title = {
+                    Text(
+                        "Eliminar Tratamiento",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                text = {
+                    Text(
+                        "¿Estás seguro de que deseas eliminar '${servicioParaEliminar?.nombre}'? Esta acción no se puede deshacer.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            servicioParaEliminar?.let { viewModel.eliminarServicio(it) }
+                            servicioParaEliminar = null
+                        }
+                    ) {
+                        Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { servicioParaEliminar = null }) {
+                        Text("Cancelar", color = MaterialTheme.colorScheme.secondary)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun ServicioCardItem(
+    servicio: Servicio,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            // Fila 1: Nombre a la izquierda, Botones de Acción a la derecha
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically, // Centra los botones con el texto
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = servicio.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.weight(1f)
+                )
+                // Agrupamos los botones para que estén juntos pero no ocupen demasiado espacio
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Eliminar",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            }
+
+            // Fila 2: Precio y Duración reubicada debajo del nombre
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+            ) {
+                Text(
+                    text = "$ ${servicio.precio}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(text = "•", color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                // Muestra la duración con un pequeño icono de reloj
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Schedule,
+                        contentDescription = "Duración",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = servicio.duracion,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            // Fila 3: Descripción
+            Text(
+                text = servicio.descripcion,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/viewmodel/LoginViewModel.kt">
+package com.example.loginbasico.ui.ViewModel
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import com.example.marcia.data.Usuario
+
+class LoginViewModel : ViewModel() {
+
+    // Estado reactivo de los campos de login (sobreviven a la rotación)
+    var email by mutableStateOf("")
+    var password by mutableStateOf("")
+    var errorMessage by mutableStateOf("")
+
+    var usuario by mutableStateOf(
+        Usuario(
+            id = 0,
+            nome = "usuario",
+            email = "email@gmail.com",
+            password = "1234"
+        )
+    )
+
+    fun validateLogin(): Boolean {
+        return when {
+            email.isBlank() && password.isBlank() -> {
+                errorMessage = "Por favor, ingresa el correo y la contraseña."
+                false
+            }
+            email.isBlank() -> {
+                errorMessage = "Por favor, ingresa el correo electrónico."
+                false
+            }
+            password.isBlank() -> {
+                errorMessage = "Por favor, ingresa la contraseña."
+                false
+            }
+            email != usuario.email || password != usuario.password -> {
+                errorMessage = "El correo o la contraseña son incorrectos."
+                false
+            }
+            else -> {
+                errorMessage = ""
+                true
+            }
+        }
+    }
+
+    fun clearError() {
+        errorMessage = ""
+    }
+
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/viewmodel/ServiciosViewModel.kt">
+package com.example.marcia.ui.viewmodel
+
+import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.ViewModel
+import com.example.marcia.data.Servicio
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+class ServiciosViewModel : ViewModel() {
+
+    var servicios = mutableStateListOf<Servicio>()
+        private set
+
+    // Estado reactivo para el formulario (Crear/Editar)
+    private val _state = MutableStateFlow(Servicio(id = 0, nombre = "", precio = "", duracion = "60 minutos", descripcion = "", categoria = "Faciales", personal = ""))
+    val state: StateFlow<Servicio> = _state.asStateFlow()
+
+    init {
+        cargarServicios()
+    }
+
+    private fun cargarServicios() {
+        if (servicios.isEmpty()) {
+            servicios.addAll(
+                listOf(
+                    Servicio(1, "Tratamiento Facial Glow", "28500", "60 minutos", "Protocolo biorevitalizante...", "Faciales", "Dra. Elena S., Mariana R."),
+                    Servicio(2, "Drenaje Linfático Manual", "22000", "90 minutos", "Técnica especializada...", "Corporales", "Lic. Sofía V."),
+                    Servicio(3, "Peeling Químico Renovador", "25000", "50 minutos", "Exfoliación profunda...", "Faciales", "Dra. Elena S.")
+                )
+            )
+        }
+    }
+
+    // Actualizadores de estado desde la UI
+    fun onNombreChange(v: String) { _state.update { it.copy(nombre = v) } }
+    fun onPrecioChange(v: String) { _state.update { it.copy(precio = v) } }
+    fun onDuracionChange(v: String) { _state.update { it.copy(duracion = v) } }
+    fun onCategoriaChange(v: String) { _state.update { it.copy(categoria = v) } }
+    fun onDescripcionChange(v: String) { _state.update { it.copy(descripcion = v) } }
+
+    fun prepararNuevoRegistro() {
+        _state.value = Servicio(id = 0, nombre = "", precio = "", duracion = "60 minutos", descripcion = "", categoria = "Faciales", personal = "")
+    }
+
+    fun seleccionarServicioParaEdicion(servicio: Servicio) {
+        _state.value = servicio.copy()
+    }
+
+    fun guardarNuevoServicio() {
+        val nuevoId = (servicios.maxOfOrNull { it.id } ?: 0) + 1
+        val nuevoServicio = _state.value.copy(id = nuevoId)
+        servicios.add(nuevoServicio)
+        prepararNuevoRegistro()
+    }
+
+    fun guardarEdicionServicio() {
+        val idEditando = _state.value.id
+        val index = servicios.indexOfFirst { it.id == idEditando }
+        if (index != -1) {
+            servicios[index] = _state.value.copy()
+        }
+        prepararNuevoRegistro()
+    }
+
+    fun eliminarServicio(servicio: Servicio) {
+        servicios.remove(servicio)
+    }
+}
+</file>
+
+<file path="build.gradle.kts">
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+}
+</file>
+
+<file path="README.md">
+1. Módulo de Autenticación y Gestión de Personal 
+
+Requerimiento de Usuario: El administrador desea tener un control sobre el personal a cargo del local, como también establecer restricciones a cada uno.  
+
+Requerimiento de sistema: Inicio de sesión 
+
+Entrada: Credenciales de acceso (correo electrónico y contraseña). 
+
+Proceso: El sistema valida la información ingresada contra la base de datos verificando que el perfil activo corresponda al rol de administrador. 
+
+Salida: Redirección al panel principal del administrador y confirmación de acceso seguro. 
+
+
+
+Requerimiento de sistema: Alta de Usuario (Administradores y Personal) 
+
+Entrada: Datos personales del usuario (DNI, nombre, apellido, teléfono, mail, dirección, contacto de emergencia) y rol de usuario (administrador, peluquero, estilista, manicura).  
+
+Proceso: El sistema valida la información ingresada, se genera un identificador único, crea el perfil del usuario y lo almacena.  
+
+Salida: Confirmación de alta del usuario en una pantalla emergente.  
+
+Requerimiento de sistema: Baja de Usuario 
+
+Entrada: Se ingresa el DNI del Usuario.  
+
+Proceso: El sistema valida la información ingresada, busca el perfil, y cambia su estado a "inactivo".  
+
+Salida: Confirmación de baja del usuario en una pantalla emergente.  
+
+Requerimiento de sistema: Modificación de Usuario 
+
+Entrada: Se ingresa el DNI del usuario.  
+
+Proceso: El sistema valida la información ingresada, busca el perfil, y permite realizar las modificaciones necesarias (nombre, apellido, teléfono, mail, contraseña, dirección, contacto de emergencia, rol).  
+
+Salida: Confirmación de modificación del usuario en una pantalla emergente.  
+
+Requerimiento de sistema: Listado de personal y administradores 
+
+Entrada: Los datos del personal se encuentran en el sistema o se puede realizar la búsqueda mediante un filtrado (por dni del usuario, estado: activo o inactivo, rol).  
+
+Proceso: El sistema valida la información ingresada, filtra en caso de que se ingresaran parámetros y se busca en el sistema.  
+
+Salida: Se muestran los datos del personal (dni, nombre, apellido, mail, teléfono, estado: activo o inactivo, rol, contacto de emergencia).  
+
+
+
+2. Módulo de Gestión de Clientes 
+
+Requerimiento de Usuario: El administrador debe poder realizar la gestión de clientes para tener acceso a información actualizada sobre cada persona.  
+
+Requerimiento de sistema: Alta de Clientes 
+
+Entrada: Datos personales del cliente (DNI, nombre, apellido, teléfono, mail, fecha de nacimiento).  
+
+Proceso: El sistema valida la información ingresada, se genera un identificador único, crea el perfil del cliente y lo almacena.  
+
+Salida: Confirmación de alta del usuario en una pantalla emergente.  
+
+Requerimiento de sistema: Baja de Clientes 
+
+Entrada: Se ingresa el DNI del cliente.  
+
+Proceso: El sistema valida la información ingresada, busca el perfil, y cambia su estado a "inactivo".  
+
+Salida: Confirmación de baja del usuario en una pantalla emergente.  
+
+Requerimiento de sistema: Modificación de Clientes 
+
+Entrada: Se ingresa el DNI del cliente.  
+
+Proceso: El sistema valida la información ingresada, filtra por DNI de clientes para encontrar el perfil, y permite realizar las modificaciones necesarias (nombre, apellido, mail, contraseña, dirección, contacto de emergencia).  
+
+Salida: Confirmación de modificación del usuario en una pantalla emergente.  
+
+Requerimiento de sistema: Listado de clientes 
+
+Entrada: Los datos de los clientes se encuentran en el sistema o se puede realizar la búsqueda mediante un filtrado (por dni de cliente, estado: activo o inactivo).  
+
+Proceso: El sistema valida la información ingresada, filtra en caso de que se ingresaran parámetros y se busca en el sistema.  
+
+Salida: Se muestran los datos de los clientes (dni, nombre, apellido, mail, teléfono, estado: activo o inactivo, contacto de emergencia).  
+
+ 
+
+3. Módulo de Gestión de Servicios 
+
+Requerimiento de Usuario: El administrador es responsable de administrar el catálogo de servicios estéticos ofrecidos en el local. 
+
+Requerimiento de sistema: Alta de Servicios 
+
+Entrada: Se ingresan los datos del servicio (nombre, descripción, categoría, costo y duración asignada). 
+
+Proceso: El sistema verifica los datos ingresados, genera un identificador único y almacena el servicio en el catálogo. 
+
+Salida: Confirmación de alta en una pantalla emergente. 
+
+Requerimiento de sistema: Baja de Servicios 
+
+Entrada: Se ingresa el identificador único o nombre del servicio. 
+
+Proceso: El sistema verifica los datos ingresados y cambia el estado del servicio seleccionado a "inactivo". 
+
+Salida: Confirmación de baja en una pantalla emergente. 
+
+Requerimiento de sistema: Modificación de Servicios 
+
+Entrada: Se ingresa el identificador único o nombre del servicio. 
+
+Proceso: El sistema verifica, busca el servicio y permite la modificación de nombre, descripción, categoría, precio o duración asignada. 
+
+Salida: Confirmación de la modificación en una pantalla emergente. 
+
+Requerimiento de sistema: Listado de Servicios 
+
+Entrada: Los datos se encuentran en el sistema o se puede realizar la búsqueda mediante un filtrado (por categoría, nombre o estado: activo/inactivo). 
+
+Proceso: El sistema valida la información ingresada, filtra en caso de que se ingresaran parámetros y busca en el sistema. 
+
+Salida: Se muestran los datos del catálogo de servicios en pantalla (nombre, descripción, categoría, costo, duración). 
+
+
+
+4. Módulo de Gestión de Productos 
+
+Requerimiento de Usuario: El administrador es responsable de administrar el inventario físico y stock de productos del local. 
+
+Requerimiento de sistema: Alta de Productos 
+
+Entrada: Se ingresan los datos del producto (nombre, descripción, categoría, costo y volumen de stock inicial). 
+
+Proceso: El sistema verifica los datos ingresados, genera un identificador único y almacena el ítem en el inventario. 
+
+Salida: Confirmación de alta en una pantalla emergente. 
+
+Requerimiento de sistema: Baja de Productos 
+
+Entrada: Se ingresa el identificador único o nombre del producto. 
+
+Proceso: El sistema verifica los datos ingresados y cambia el estado del producto seleccionado a "inactivo". 
+
+Salida: Confirmación de baja en una pantalla emergente. 
+
+Requerimiento de sistema: Modificación de Productos 
+
+Entrada: Se ingresa el identificador único o nombre del producto. 
+
+Proceso: El sistema verifica, busca el ítem y permite la modificación del nombre, precio, nivel de stock, descripción o categoría. 
+
+Salida: Confirmación de la modificación en una pantalla emergente. 
+
+Requerimiento de sistema: Listado de Productos 
+
+Entrada: Los datos se encuentran en el sistema o se puede realizar la búsqueda mediante un filtrado (por categoría, nombre, nivel de stock o estado: activo/inactivo). 
+
+Proceso: El sistema valida la información ingresada, filtra en caso de que se ingresaran parámetros y busca en el sistema. 
+
+Salida: Se muestran los datos del inventario de productos en pantalla (nombre, descripción, costo, cantidad). 
+
+ 
+
+5. Módulo de Gestor de Turnos 
+
+Requerimiento de Usuario: El administrador debe ser capaz de administrar, consultar y asignar turnos a clientes, organizando la agenda diaria del salón. 
+
+Requerimiento de sistema: Asignación de turno 
+
+Entrada: Se selecciona el DNI del cliente, el ID del servicio requerido, el DNI del profesional a cargo, la fecha y el horario de inicio/salida.  
+
+Proceso: El sistema valida que el usuario, profesional y servicio estén activos, verifica la disponibilidad de agenda en el horario solicitado, y registra la asignación.  
+
+Salida: Confirmación de asignación exitosa en pantalla con el resumen del turno (nombre de cliente, nombre de profesional, nombre de servicio, fecha y horario, costo total) vinculado al perfil del cliente.  
+
+Requerimiento de sistema: Cancelación de turno 
+
+Entrada: Se ingresa el ID del turno asignado. 
+
+Proceso: El sistema verifica que el turno esté activo y permite cancelarlo marcándolo como "inactivo". 
+
+Salida: Notificación en pantalla confirmando la cancelación.  
+
+Requerimiento de sistema: Listado de agenda de turnos 
+
+Entrada: Selección del período a consultar (rango de fechas desde/hasta) y el filtro opcional por profesional asignado (turnos realizados, pendientes o cancelados).  
+
+Proceso: El sistema filtra los turnos en base de los parámetros y recupera la agenda correspondiente.  
+
+Salida: Despliegue en la interfaz gráfica el listado de turnos del día con sus respectivos horarios, clientes y servicios.  
+
+
+
+6. Módulo de Gestión de Ventas y Recibos 
+
+Requerimiento de Usuario: El administrador requiere un control detallado sobre los cobros de servicios y el flujo de ventas del salón. 
+
+Requerimiento de sistema: Registro de venta servicio 
+
+Entrada: Se ingresa el DNI del cliente, los servicios, el tipo de pago (efectivo, transferencia o ambos) y el profesional que realizó el trabajo. 
+
+Proceso: El sistema calcula el costo total, registra la transacción y descuenta de forma automática el stock de los productos que hayan sido utilizados en el servicio.  
+
+Salida: Confirmación del registro en pantalla emergente con el detalle (dni del cliente, dni del profesional, tipo de servicio, tipo de pago).  
+
+Requerimiento de sistema: Registro de venta producto 
+
+Entrada: Se ingresa el DNI del cliente, productos vendidos, el tipo de pago (efectivo, transferencia o ambos) y el empleado que realizó la venta. 
+
+Proceso: El sistema calcula el costo total, registra la transacción y descuenta de forma automática el stock de los productos que hayan sido vendidos.  
+
+Salida: Confirmación del registro en pantalla emergente con el detalle (dni cliente, listado de productos, tipo de pago y costo). 
+
+Requerimiento de sistema: Emisión de recibos 
+
+Entrada: Se ingresa el ID de la transacción aprobada. 
+
+Proceso: El sistema recupera los detalles de la venta, desglosando los ítems, los montos parciales y el método de pago utilizado. 
+
+Salida: Comprobante digital generado en pantalla para su impresión, descarga o envío al cliente.  
+
+
+
+7. Módulo de Estadísticas y Desempeño 
+
+Requerimiento de Usuario: El negocio requiere un análisis de métricas operativas para medir la rentabilidad del salón y la satisfacción con el servicio brindado por el personal.  
+
+Requerimiento de sistema: Estadísticas de ventas y servicios o productos más solicitados 
+
+Entrada: Selección del período a consultar (rango de fechas desde/hasta, filtro mensual o anual).  
+
+Proceso: El sistema procesa los registros históricos de ventas, agrupa por producto o servicio y suma los totales para identificar tendencias y rentabilidad.  
+
+Salida: Se muestra un panel gráfico con las métricas solicitadas, donde se utilicen gráficos de torta para una mejor visualización.  
+
+Requerimiento de sistema: Calificaciones de los empleados 
+
+Entrada: DNI del empleado (estilista, manicura, peluquero) y rango de fechas a consultar. 
+
+Proceso: El sistema recopila el historial de turnos finalizados asociados a ese empleado y cruza la información con las puntuaciones o reseñas otorgadas por los clientes. 
+
+Salida: Visualización en pantalla del promedio general de calificación del empleado junto a los comentarios de valoración.
+</file>
+
+<file path="app/src/main/java/com/example/marcia/data/Empleado.kt">
+package com.example.marcia.data
+
+data class Empleado(
+    var id : Int = 0,
+    var UsuarioId : Usuario = Usuario(),
+    var role: String = "",
+    var shifts: String = "",
+    var rating: String = ""
+)
+</file>
+
+<file path="app/src/main/java/com/example/marcia/data/Usuario.kt">
+package com.example.marcia.data
+
+data class Usuario (
+    val id: Int = 0,
+    var nome: String = "",
+    var apellido: String = "",
+    var email: String = "",
+    var tel : String = "",
+    var dni : String = "",
+    var password: String = "",
+
+
+){
+
+    override fun toString(): String {
+        return "Usuario(id=$id, nome='$nome', email='$email', password='$password')"
+    }
+
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/navigation/Rutas.kt">
+package com.example.marcia.ui.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Spa
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
+/**
+ * Type-safe serializable navigation routes for Jetpack Compose Navigation 3.
+ */
+sealed interface ScreenRoute : NavKey
+
+@Serializable
+data object LoginRoute : ScreenRoute
+
+// Primary Bottom Navigation Destinations
+@Serializable
+data object TurnosRoute : ScreenRoute
+
+@Serializable
+data object ServiciosRoute : ScreenRoute
+
+@Serializable
+data object EmpleadosRoute : ScreenRoute
+
+@Serializable
+data object RegistroEmpleadoRoute : ScreenRoute
+
+@Serializable
+data object FinanzasRoute : ScreenRoute
+
+// Secondary / Workflow Destinations with serializable arguments
+@Serializable
+data class DetalleTurnoRoute(val appointmentId: String) : ScreenRoute
+
+@Serializable
+data object NuevoTurnoRoute : ScreenRoute
+
+@Serializable
+data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
+
+@Serializable
+data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
+
+/**
+ * Representation of top-level destinations shown in the bottom navigation bar.
+ */
+data class TopLevelDestination(
+    val route: NavKey,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val label: String,
+    val testTag: String
+)
+
+val TOP_LEVEL_DESTINATIONS = listOf(
+    TopLevelDestination(
+        route = TurnosRoute,
+        selectedIcon = Icons.Filled.CalendarMonth,
+        unselectedIcon = Icons.Outlined.CalendarMonth,
+        label = "Turnos",
+        testTag = "nav_tab_turnos"
+    ),
+    TopLevelDestination(
+        route = ServiciosRoute,
+        selectedIcon = Icons.Filled.Spa,
+        unselectedIcon = Icons.Outlined.Spa,
+        label = "Servicios",
+        testTag = "nav_tab_servicios"
+    ),
+    TopLevelDestination(
+        route = EmpleadosRoute,
+        selectedIcon = Icons.Filled.Badge,
+        unselectedIcon = Icons.Outlined.Badge,
+        label = "Empleados",
+        testTag = "nav_tab_empleados"
+    ),
+    TopLevelDestination(
+        route = FinanzasRoute,
+        selectedIcon = Icons.Filled.AccountBalanceWallet,
+        unselectedIcon = Icons.Outlined.AccountBalanceWallet,
+        label = "Finanzas",
+        testTag = "nav_tab_finanzas"
+    )
+)
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Empleados/EmpleadoDetalleScreen.kt">
+package com.example.marcia.ui.screen.Empleados
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.marcia.data.Empleado
+import com.example.marcia.data.Usuario
+
+@Composable
+fun DetalleEmpleadoContent(
+    usuarioState: Usuario,
+    empleadoState: Empleado,
+    onNombreChange: (String) -> Unit,
+    onApellidoChange: (String) -> Unit,
+    onDniChange: (String) -> Unit,
+    onRolChange: (String) -> Unit,
+    onConfirmar: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        EncabezadoModal(
+            icono = Icons.Default.Person,
+            titulo = "Detalle / Modificación",
+            onDismiss = onDismiss
+        )
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            CustomFormField(
+                label = "NOMBRE",
+                placeholder = "Ej: Camila",
+                value = usuarioState.nome,
+                onInputChange = onNombreChange,
+                modifier = Modifier.weight(1f)
+            )
+            CustomFormField(
+                label = "APELLIDO",
+                placeholder = "Ej: Ponce",
+                value = usuarioState.apellido,
+                onInputChange = onApellidoChange,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            CustomFormField(
+                label = "DNI",
+                placeholder = "Sin puntos",
+                value = usuarioState.dni,
+                onInputChange = onDniChange,
+                modifier = Modifier.weight(1f)
+            )
+            CustomFormField(
+                label = "SERVICIO / ROL",
+                value = empleadoState.role,
+                onInputChange = onRolChange,
+                placeholder = "Ej: Lashista",
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onConfirmar,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        ) {
+            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Guardar Cambios", style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetalleEmpleadoContentPreview() {
+    DetalleEmpleadoContent(
+        usuarioState = Usuario(nome = "Baltasar", apellido = "Elli", dni = "12345678"),
+        empleadoState = Empleado(role = "Peluquero"),
+        onNombreChange = {},
+        onApellidoChange = {},
+        onDniChange = {},
+        onRolChange = {},
+        onConfirmar = {},
+        onDismiss = {}
+    )
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/theme/Color.kt">
+package com.example.marcia.ui.theme
+
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+
+
+val Primary = Color(0xFF2F0211) // Deep Velvet Plum[cite: 10]
+val OnPrimary = Color(0xFFFFFFFF)
+val PrimaryContainer = Color(0xFF4A1525)
+val OnPrimaryContainer = Color(0xFFC57A8B)
+
+val Secondary = Color(0xFF8C4B55) // Bronze Rose[cite: 10]
+val OnSecondary = Color(0xFFFFFFFF)
+val SecondaryContainer = Color(0xFFFEAAB6)
+
+val Background = Color(0xFFFCF9F7) // Alabaster Blush[cite: 10]
+val Surface = Color(0xFFFCF9F7)
+val SurfaceVariant = Color(0xFFE5E2E0)
+val OnSurface = Color(0xFF1B1C1B)
+val OnSurfaceVariant = Color(0xFF524346)
+
+val Success = Color(0xFF2E5A44)
+val SuccessContainer = Color(0xFFEBF3EE)
+
+val MarciaColorScheme = lightColorScheme(
+    primary = Primary,
+    onPrimary = OnPrimary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
+    secondary = Secondary,
+    onSecondary = OnSecondary,
+    secondaryContainer = SecondaryContainer,
+    background = Background,
+    surface = Surface,
+    onSurface = OnSurface,
+    onSurfaceVariant = OnSurfaceVariant,
+    surfaceVariant = SurfaceVariant
+)
+
+
+
+// Marcia Salón de Belleza - Palette based on design specification
+val PlumPrimary = Color(0xFF2F0211)
+val PlumPrimaryContainer = Color(0xFF4A1525)
+val PlumOnPrimaryContainer = Color(0xFFC57A8B)
+val PlumInversePrimary = Color(0xFFFFB1C2)
+
+val RoseSecondary = Color(0xFF8C4B55)
+val RoseSecondaryContainer = Color(0xFFFEAAB6)
+val RoseOnSecondaryContainer = Color(0xFF7A3C46)
+val RoseSecondaryFixed = Color(0xFFFFD9DD)
+val RoseOnSecondaryFixed = Color(0xFF3A0915)
+
+val ChampagneTertiary = Color(0xFF260C02)
+val ChampagneTertiaryContainer = Color(0xFF402011)
+val ChampagneTertiaryFixed = Color(0xFFFFDBCD)
+val ChampagneOnTertiaryFixed = Color(0xFF301306)
+
+val SurfaceAlabaster = Color(0xFFFCF9F7)
+val SurfaceContainerLowest = Color(0xFFFFFFFF)
+val SurfaceContainerLow = Color(0xFFF6F3F1)
+val SurfaceContainer = Color(0xFFF0EDEB)
+val SurfaceContainerHigh = Color(0xFFEAE8E6)
+val SurfaceContainerHighest = Color(0xFFE5E2E0)
+
+val OnSurfaceText = Color(0xFF1B1C1B)
+val OnSurfaceVariantText = Color(0xFF524346)
+val OutlineColor = Color(0xFF847375)
+val OutlineVariantColor = Color(0xFFD7C1C4)
+
+// Status feedback semantic colors
+val StatusGreenText = Color(0xFF1B5E20)
+val StatusGreenBg = Color(0xFFE8F5E9)
+val StatusAmberText = Color(0xFFE65100)
+val StatusAmberBg = Color(0xFFFFF3E0)
+val StatusPlumText = Color(0xFF4A1525)
+val StatusPlumBg = Color(0xFFFFD9DD)
+val StatusError = Color(0xFFBA1A1A)
+val StatusErrorContainer = Color(0xFFFFDAD6)
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/viewmodel/EmpleadosViewModel.kt">
+package com.example.marcia.ui.viewmodel
+
+import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.ViewModel
+import com.example.marcia.data.Empleado
+import com.example.marcia.data.Usuario
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+class EmpleadosViewModel : ViewModel() {
+
+    val listadoEmpleados = mutableStateListOf<Empleado>()
+
+    private val _state = MutableStateFlow(Empleado())
+    private val _stateUsuario = MutableStateFlow(Usuario())
+
+    val state: StateFlow<Empleado> = _state.asStateFlow()
+    val stateUsuario: StateFlow<Usuario> = _stateUsuario.asStateFlow()
+
+    fun onNombreChange(v: String) { _stateUsuario.update { it.copy(nome = v) } }
+    fun onApellidoChange(v: String) { _stateUsuario.update { it.copy(apellido = v) } }
+    fun onDniChange(v: String) { _stateUsuario.update { it.copy(dni = v) } }
+    fun onRolChange(v: String) { _state.update { it.copy(role = v) } }
+
+    val empleadoSeleccionado = mutableSetOf<Empleado>()
+
+    init {
+        cargarEmpleados()
+    }
+
+    fun cargarEmpleados() {
+        if (listadoEmpleados.isEmpty()) {
+            listadoEmpleados.addAll(
+                listOf(
+                    Empleado(1, Usuario(id = 1, nome = "Joaquin", apellido = "Navarrete", dni = "12345678"), "Estilista", "4 turnos hoy", "4.67"),
+                    Empleado(2, Usuario(id = 2, nome = "Baltasar", apellido = "Elli", dni = "87654321"), "Peluquero", "1 turnos hoy", "4.50"),
+                    Empleado(3, Usuario(id = 3, nome = "Exequiel", apellido = "De Yebra", dni = "11223344"), "Barbero", "3 turnos hoy", "4.80")
+                )
+            )
+        }
+    }
+
+    fun prepararNuevoRegistro() {
+        _state.value = Empleado()
+        _stateUsuario.value = Usuario()
+    }
+
+    fun seleccionarEmpleadoParaEdicion(empleado: Empleado) {
+        _state.value = empleado.copy()
+        _stateUsuario.value = empleado.UsuarioId.copy()
+    }
+
+    fun agregarEmpleado() {
+        val nuevoId = (listadoEmpleados.maxOfOrNull { it.id } ?: 0) + 1
+        val nuevoEmpleado = _state.value.copy(
+            id = nuevoId,
+            UsuarioId = _stateUsuario.value,
+            shifts = "0 turnos hoy",
+            rating = "5.00"
+        )
+        listadoEmpleados.add(nuevoEmpleado)
+
+        prepararNuevoRegistro()
+    }
+
+    fun guardarEdicionEmpleado() {
+        val idEditando = _state.value.id
+        val index = listadoEmpleados.indexOfFirst { it.id == idEditando }
+        if (index != -1) {
+            val empleadoEditado = _state.value.copy(
+                UsuarioId = _stateUsuario.value
+            )
+            listadoEmpleados[index] = empleadoEditado
+        }
+        prepararNuevoRegistro()
+    }
+
+    fun eliminarEmpleado(empleado: Empleado) {
+        listadoEmpleados.remove(empleado)
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/theme/Theme.kt">
+package com.example.marcia.ui.theme
+
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+
+
+//
+
+
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+
+import androidx.compose.ui.graphics.Color
+
+@Composable
+fun MarciaSalonDeBellezaTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    // 3. IMPORTANTE: Cambiamos dynamicColor a 'false' por defecto.
+    // Esto evita que en Android 12+ la app tome los colores del fondo
+    // de pantalla del usuario en lugar de los tuyos.
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> MarciaColorScheme
+        else -> MarciaColorScheme
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+
+
+
+
+private val DarkColorScheme = darkColorScheme(
+    primary = PlumInversePrimary,
+    onPrimary = PlumPrimary,
+    primaryContainer = PlumPrimaryContainer,
+    onPrimaryContainer = PlumInversePrimary,
+    secondary = RoseSecondaryContainer,
+    onSecondary = PlumPrimary,
+    secondaryContainer = RoseOnSecondaryContainer,
+    onSecondaryContainer = RoseSecondaryFixed,
+    tertiary = ChampagneTertiaryFixed,
+    onTertiary = ChampagneTertiary,
+    background = Color(0xFF1B1417),
+    surface = Color(0xFF1E1719),
+    surfaceVariant = Color(0xFF36272B),
+    onSurface = Color(0xFFF2ECEE),
+    onSurfaceVariant = Color(0xFFD7C1C4),
+    outline = OutlineColor,
+    outlineVariant = OutlineVariantColor
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = PlumPrimary,
+    onPrimary = Color.White,
+    primaryContainer = PlumPrimaryContainer,
+    onPrimaryContainer = Color.White,
+    secondary = RoseSecondary,
+    onSecondary = Color.White,
+    secondaryContainer = RoseSecondaryContainer,
+    onSecondaryContainer = RoseOnSecondaryContainer,
+    tertiary = ChampagneTertiary,
+    onTertiary = Color.White,
+    tertiaryContainer = ChampagneTertiaryContainer,
+    onTertiaryContainer = ChampagneTertiaryFixed,
+    background = SurfaceAlabaster,
+    surface = SurfaceAlabaster,
+    surfaceVariant = SurfaceContainer,
+    onSurface = OnSurfaceText,
+    onSurfaceVariant = OnSurfaceVariantText,
+    surfaceContainerLowest = SurfaceContainerLowest,
+    surfaceContainerLow = SurfaceContainerLow,
+    surfaceContainer = SurfaceContainer,
+    surfaceContainerHigh = SurfaceContainerHigh,
+    surfaceContainerHighest = SurfaceContainerHighest,
+    outline = OutlineColor,
+    outlineVariant = OutlineVariantColor,
+    error = StatusError,
+    onError = Color.White,
+    errorContainer = StatusErrorContainer,
+    onErrorContainer = StatusError
+)
+
+@Composable
+fun MarciaSalonTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Empleados/RegistrarEmpleadoScreen.kt">
+package com.example.marcia.ui.screen.Empleados
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.marcia.data.Empleado
+import com.example.marcia.data.Usuario
+
+@Composable
+fun EncabezadoModal(icono: ImageVector, titulo: String, onDismiss: () -> Unit = {}) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icono,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Text(
+                text = titulo,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+        IconButton(onClick = onDismiss) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Cerrar",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+/**
+ * Componente Stateless siguiendo las buenas prácticas y estándares de Android.
+ * No depende de ningún ViewModel específico, facilitando pruebas unitarias y Previews.
+ */
+@Composable
+fun RegistrarEmpleadoContent(
+    usuarioState: Usuario,
+    empleadoState: Empleado,
+    onNombreChange: (String) -> Unit,
+    onApellidoChange: (String) -> Unit,
+    onDniChange: (String) -> Unit,
+    onRolChange: (String) -> Unit,
+    onConfirmar: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        EncabezadoModal(
+            icono = Icons.Default.PersonAdd,
+            titulo = "Registrar empleado",
+            onDismiss = onDismiss
+        )
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            CustomFormField(
+                label = "NOMBRE",
+                placeholder = "Ej: Camila",
+                value = usuarioState.nome,
+                onInputChange = onNombreChange,
+                modifier = Modifier.weight(1f)
+            )
+            CustomFormField(
+                label = "APELLIDO",
+                value = usuarioState.apellido,
+                placeholder = "Ej: Ponce",
+                onInputChange = onApellidoChange,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            CustomFormField(
+                label = "DNI",
+                value = usuarioState.dni,
+                placeholder = "Sin puntos",
+                onInputChange = onDniChange,
+                modifier = Modifier.weight(1f)
+            )
+            CustomFormField(
+                label = "SERVICIO / ROL",
+                value = empleadoState.role,
+                onInputChange = onRolChange,
+                placeholder = "Ej: Lashista",
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onConfirmar,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        ) {
+            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Confirmar y Guardar", style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
+@Composable
+fun CustomFormField(
+    label: String,
+    placeholder: String,
+    value: String = "",
+    onInputChange: (String) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.Bold
+        )
+        TextField(
+            value = value,
+            onValueChange = onInputChange,
+            placeholder = { Text(placeholder, color = Color.Gray) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RegistrarEmpleadoContentPreview() {
+    RegistrarEmpleadoContent(
+        usuarioState = Usuario(nome = "Camila", apellido = "Ponce", dni = "12345678"),
+        empleadoState = Empleado(role = "Lashista"),
+        onNombreChange = {},
+        onApellidoChange = {},
+        onDniChange = {},
+        onRolChange = {},
+        onConfirmar = {},
+        onDismiss = {}
+    )
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/MainActivity.kt">
+package com.example.marcia
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.loginbasico.ui.ViewModel.LoginViewModel
+//import com.example.marcia.ui.navigation.MarciaAppNavigation
+import com.example.marcia.ui.navigation.MarciaSalonApp
+import com.example.marcia.ui.theme.MarciaSalonDeBellezaTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            MarciaSalonDeBellezaTheme(
+
+            ) {
+                MarciaSalonApp()
+            }
+
+//
+//            MarciaSalonDeBellezaTheme {
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    val loginViewModel: LoginViewModel = viewModel()
+//                    //MarciaAppNavigation()
+//
+//                }
+//            }
+        }
+    }
+}
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/screen/Empleados/EmpleadosScreen.kt">
+package com.example.marcia.ui.screen.Empleados
+
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.marcia.data.Empleado
+import com.example.marcia.ui.viewmodel.EmpleadosViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun EmpleadosScreen(
+    empleadosViewModel: EmpleadosViewModel = viewModel(),
+) {
+    val empleadosLista = empleadosViewModel.listadoEmpleados
+    var mostrarModalRegistro by remember { mutableStateOf(false) }
+    var empleadoParaEditar by remember { mutableStateOf<Empleado?>(null) }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    MetricCard("TOTAL", empleadosLista.size.toString(), "equipo", Modifier.weight(1f))
+                    MetricCard("EN TURNO", "6", "activos", Modifier.weight(1f))
+                    MetricCard("LICENCIA", "2", "ausentes", Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            items(empleadosLista) { empleado ->
+                EmpleadoCardItem(
+                    empleado = empleado,
+                    onClick = {
+                        empleadosViewModel.seleccionarEmpleadoParaEdicion(empleado)
+                        empleadoParaEditar = empleado
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(80.dp))
+            }
+        }
+
+        BotonFlotanteAgregarEmpleado(
+            onClick = {
+                empleadosViewModel.prepararNuevoRegistro()
+                mostrarModalRegistro = true
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        )
+
+        // Modal de Registro
+        if (mostrarModalRegistro) {
+            ModalBottomSheet(
+                onDismissRequest = { mostrarModalRegistro = false },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val state by empleadosViewModel.state.collectAsStateWithLifecycle()
+                val stateUsuario by empleadosViewModel.stateUsuario.collectAsStateWithLifecycle()
+
+                RegistrarEmpleadoContent(
+                    usuarioState = stateUsuario,
+                    empleadoState = state,
+                    onNombreChange = empleadosViewModel::onNombreChange,
+                    onApellidoChange = empleadosViewModel::onApellidoChange,
+                    onDniChange = empleadosViewModel::onDniChange,
+                    onRolChange = empleadosViewModel::onRolChange,
+                    onConfirmar = {
+                        empleadosViewModel.agregarEmpleado()
+                        mostrarModalRegistro = false
+                    },
+                    onDismiss = { mostrarModalRegistro = false }
+                )
+            }
+        }
+
+        // Modal de Detalle / Edición
+        if (empleadoParaEditar != null) {
+            ModalBottomSheet(
+                onDismissRequest = { empleadoParaEditar = null },
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            ) {
+                val state by empleadosViewModel.state.collectAsStateWithLifecycle()
+                val stateUsuario by empleadosViewModel.stateUsuario.collectAsStateWithLifecycle()
+
+                DetalleEmpleadoContent(
+                    usuarioState = stateUsuario,
+                    empleadoState = state,
+                    onNombreChange = empleadosViewModel::onNombreChange,
+                    onApellidoChange = empleadosViewModel::onApellidoChange,
+                    onDniChange = empleadosViewModel::onDniChange,
+                    onRolChange = empleadosViewModel::onRolChange,
+                    onConfirmar = {
+                        empleadosViewModel.guardarEdicionEmpleado()
+                        empleadoParaEditar = null
+                    },
+                    onDismiss = { empleadoParaEditar = null }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BotonFlotanteAgregarEmpleado(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ExtendedFloatingActionButton(
+        onClick = onClick,
+        text = { Text("Agregar empleado") },
+        icon = { Icon(Icons.Filled.Add, contentDescription = "Agregar empleado") },
+        shape = RoundedCornerShape(16.dp),
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        modifier = modifier.testTag("btn_agregar_empleado")
+    )
+}
+
+@Composable
+fun MetricCard(title: String, value: String, subtitle: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(title, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(value, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+            Text(subtitle, style = MaterialTheme.typography.labelSmall)
+        }
+    }
+}
+
+@Composable
+fun EmpleadoCardItem(
+    empleado: Empleado,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        onClick = onClick
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "${empleado.UsuarioId.nome} ${empleado.UsuarioId.apellido}",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                empleado.role,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(empleado.shifts, style = MaterialTheme.typography.bodyMedium)
+                Text("⭐ ${empleado.rating}", style = MaterialTheme.typography.labelMedium)
+            }
+        }
+    }
+}
+</file>
+
+<file path="app/build.gradle.kts">
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+android {
+    namespace = "com.example.marcia"
+    compileSdk {
+        version = release(37)
+    }
+
+    defaultConfig {
+        applicationId = "com.example.marcia"
+        minSdk = 30
+        targetSdk = 37
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            optimization {
+                enable = false
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.material3)
+    implementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.junit)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation("androidx.compose.material:material-icons-extended")
+
+    //Nav 3
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation3)
+    implementation(libs.kotlinx.serialization.core)
+}
+</file>
+
+<file path="gradle/libs.versions.toml">
+[versions]
+agp = "9.3.3"
+coreKtx = "1.19.1"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.11.0"
+activityCompose = "1.13.0"
+kotlin = "2.2.10"
+kotlinxSerializationJson = "1.8.0"
+composeBom = "2026.02.01"
+navigationCompose = "2.10.2"
+foundationLayout = "1.12.1"
+
+nav3Core = "1.2.0"
+lifecycleViewmodelNav3 = "2.12.0-alpha04"
+kotlinxSerializationCore = "1.9.0"
+material3AdaptiveNav3 = "1.4.0-alpha02"
+material3 = "1.4.0"
+
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+
+
+# Core Navigation 3 libraries
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+
+# Optional add-on libraries
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
+androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+</file>
+
+<file path="app/src/main/java/com/example/marcia/ui/navigation/MarciaAppNavigation.kt">
+package com.example.marcia.ui.navigation
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import com.example.loginbasico.ui.ViewModel.LoginViewModel
+import com.example.marcia.ui.screen.Empleados.EmpleadosScreen
+
+import com.example.marcia.ui.screen.FinanzasScreen
+import com.example.marcia.ui.screen.LoginScreen
+import com.example.marcia.ui.screen.ServiciosScreen
+import com.example.marcia.ui.screen.TurnosScreen
+
+@Composable
+fun MarciaSalonApp(
+    backStack: NavBackStack<NavKey> = rememberNavBackStack(EmpleadosRoute)
+) {
+    val loginViewModel: LoginViewModel = viewModel()
+    val currentDestination = backStack.lastOrNull()
+
+    // Check if current route is one of the top level destinations
+    val showBottomBar by remember(currentDestination) {
+        derivedStateOf {
+            TOP_LEVEL_DESTINATIONS.any { topLevel ->
+                topLevel.route == currentDestination
+            }
+        }
+    }
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 20.dp),
+        contentWindowInsets = WindowInsets.navigationBars,
+        bottomBar = {
+            AnimatedVisibility(
+                visible = showBottomBar,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                MarciaBottomNavBar(
+                    backStack = backStack,
+                    currentDestination = currentDestination
+                )
+            }
+        }
+    ) { innerPadding ->
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            entryProvider = entryProvider {
+                entry<LoginRoute> {
+                    LoginScreen(
+                        loginViewModel = loginViewModel,
+                        onLoginSuccess = {
+                            backStack.clear()
+                            backStack.add(ServiciosRoute)
+                        }
+                    )
+                }
+
+                // Tab 1: Turnos (Agenda)
+                entry<TurnosRoute> {
+                    TurnosScreen(
+//                        onNavigateToTurnoDetail = { appointmentId ->
+//                            backStack.add(DetalleTurnoRoute(appointmentId = appointmentId))
+//                        },
+//                        onNavigateToNuevoTurno = {
+//                            backStack.add(NuevoTurnoRoute)
+//                        }
+                    )
+                }
+
+                // Tab 2: Servicios
+                entry<ServiciosRoute> {
+                    ServiciosScreen(
+//                        onNavigateToServiceDetail = { serviceId ->
+//                            backStack.add(DetalleServicioRoute(serviceId = serviceId))
+//                        },
+//                        onNavigateToNuevoTurno = {
+//                            backStack.add(NuevoTurnoRoute)
+//                        }
+                    )
+                }
+
+                // Tab 3: Empleados
+                entry<EmpleadosRoute> {
+                    EmpleadosScreen(
+                    )
+                }
+
+                // Tab 4: Finanzas
+                entry<FinanzasRoute> {
+                    FinanzasScreen()
+                }
+
+                // Sub-Screens
+//                entry<DetalleTurnoRoute> { key ->
+//                    DetalleTurnoScreen(
+//                        appointmentId = key.appointmentId,
+//                        onNavigateBack = { backStack.removeLastOrNull() }
+//                    )
+//                }
+//                entry<NuevoTurnoRoute> {
+//                    NuevoTurnoScreen(
+//                        onNavigateBack = { backStack.removeLastOrNull() }
+//                    )
+//                }
+//                entry<DetalleServicioRoute> { key ->
+//                    DetalleServicioScreen(
+//                        serviceId = key.serviceId,
+//                        onNavigateBack = { backStack.removeLastOrNull() },
+//                        onNavigateToNuevoTurno = { backStack.add(NuevoTurnoRoute) }
+//                    )
+//                }
+//                entry<DetalleEmpleadoRoute> { key ->
+//                    DetalleEmpleadoScreen(
+//                        employeeId = key.employeeId,
+//                        onNavigateBack = { backStack.removeLastOrNull() }
+//                    )
+//                }
+            }
+        )
+    }
+}
+
+@Composable
+fun MarciaBottomNavBar(
+    backStack: NavBackStack<NavKey>,
+    currentDestination: NavKey?
+) {
+    NavigationBar(
+        modifier = Modifier
+            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            .testTag("marcia_bottom_nav_bar"),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        tonalElevation = 8.dp
+    ) {
+        TOP_LEVEL_DESTINATIONS.forEach { destination ->
+            val isSelected = currentDestination == destination.route
+
+            NavigationBarItem(
+                selected = isSelected,
+                onClick = {
+                    if (!isSelected) {
+                        backStack.clear()
+                        backStack.add(destination.route)
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
+                        contentDescription = destination.label
+                    )
+                },
+                label = {
+                    Text(
+                        text = destination.label,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                    )
+                },
+                modifier = Modifier.testTag(destination.testTag)
+            )
+        }
+    }
+}
+</file>
+
+</files>

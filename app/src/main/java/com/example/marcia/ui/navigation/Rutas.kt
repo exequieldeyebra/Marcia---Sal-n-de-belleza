@@ -4,10 +4,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation3.runtime.NavKey
@@ -37,6 +39,9 @@ data object RegistroEmpleadoRoute : ScreenRoute
 @Serializable
 data object FinanzasRoute : ScreenRoute
 
+@Serializable
+data object ProductosRoute : ScreenRoute // <- Ruta principal para el catálogo de productos
+
 // Secondary / Workflow Destinations with serializable arguments
 @Serializable
 data class DetalleTurnoRoute(val appointmentId: String) : ScreenRoute
@@ -49,6 +54,16 @@ data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
 
 @Serializable
 data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
+
+// Rutas secundarias para el flujo completo de Productos
+@Serializable
+data class DetalleProductoRoute(val productoId: String) : ScreenRoute
+
+@Serializable
+data object CarritoRoute : ScreenRoute
+
+@Serializable
+data class CompraConfirmadaRoute(val total: Double, val medioPago: String) : ScreenRoute
 
 /**
  * Representation of top-level destinations shown in the bottom navigation bar.
@@ -82,6 +97,13 @@ val TOP_LEVEL_DESTINATIONS = listOf(
         unselectedIcon = Icons.Outlined.Badge,
         label = "Empleados",
         testTag = "nav_tab_empleados"
+    ),
+    TopLevelDestination(
+        route = ProductosRoute, // <- Agregado al Bottom Bar de la app
+        selectedIcon = Icons.Filled.ShoppingCart,
+        unselectedIcon = Icons.Outlined.ShoppingCart,
+        label = "Productos",
+        testTag = "nav_tab_productos"
     ),
     TopLevelDestination(
         route = FinanzasRoute,
