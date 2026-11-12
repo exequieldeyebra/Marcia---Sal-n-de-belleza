@@ -7,123 +7,90 @@ import androidx.lifecycle.ViewModel
 import com.example.marcia.data.Producto
 
 /**
- * Modelo interno para representar un elemento dentro del carrito con su cantidad.
+ * ViewModel encargado de gestionar el ABML de productos para el panel de administración
+ * del salón de belleza, preparado con una lista local en memoria lista para conectar con BD.
  */
-data class ItemCarrito(
-    val producto: Producto,
-    var cantidad: Int
-)
-
 class ProductosViewModel : ViewModel() {
 
-    // Lista de productos en catálogo
+    // Lista de productos en inventario para administración (ABML)
     var listaProductos by mutableStateOf(
         listOf(
-            Producto("1", "Shampoo Especial", 12500.0, 10, 0),
-            Producto("2", "Acondicionador Brillo", 11000.0, 5, 0),
-            Producto("3", "Crema para peinar", 9500.0, 8, 0),
-            Producto("4", "Aceite de Argan", 15000.0, 3, 0)
+            Producto(
+                id = "1",
+                nombre = "Shampoo Especial",
+                descripcion = "Tratamiento capilar nutritivo de uso profesional",
+                precio = 12500.0,
+                stock = 10,
+                imagenResId = 0
+            ),
+            Producto(
+                id = "2",
+                nombre = "Acondicionador Brillo",
+                descripcion = "Fórmula avanzada para suavidad extrema",
+                precio = 11000.0,
+                stock = 5,
+                imagenResId = 0
+            ),
+            Producto(
+                id = "3",
+                nombre = "Crema para peinar",
+                descripcion = "Definición y control anti-frizz",
+                precio = 9500.0,
+                stock = 8,
+                imagenResId = 0
+            ),
+            Producto(
+                id = "4",
+                nombre = "Aceite de Argan",
+                descripcion = "Reparación profunda de puntas",
+                precio = 15000.0,
+                stock = 3,
+                imagenResId = 0
+            )
         )
     )
         private set
 
-    // Lista de ítems en el carrito de compras
-    var carrito by mutableStateOf(listOf<ItemCarrito>())
-        private set
-
-    // Medio de pago seleccionado (Efectivo, Transferencia, Tarjeta)
-    var medioPagoSeleccionado by mutableStateOf("Efectivo")
-        private set
-
-    // Opciones disponibles de medio de pago
-    val mediosPagoDisponibles = listOf("Efectivo", "Transferencia", "Tarjeta de Débito/Crédito")
-
     /**
-     * Calcula el monto total acumulado del carrito dinámicamente.
+     * ALTA o MODIFICACIÓN de un producto.
+     * Si el ID viene nulo o vacío, se crea uno nuevo (Alta).
+     * Si el ID ya existe, se actualizan sus datos (Modificación).
      */
-    val totalVenta: Double
-        get() = carrito.sumOf { it.producto.precio * it.cantidad } // <- Arreglado el operador *
-
-    /**
-     * Agrega un producto al carrito o incrementa su cantidad si ya existía.
-     */
-    fun agregarAlCarrito(producto: Producto) {
-        val itemExistente = carrito.find { it.producto.id == producto.id }
-        if (itemExistente != null) {
-            // Si ya existe, creamos una nueva lista incrementando la cantidad del ítem
-            carrito = carrito.map {
-                if (it.producto.id == producto.id) {
-                    it.copy(cantidad = it.cantidad + 1)
+    fun guardarProducto(id: String?, nombre: String, descripcion: String, precio: Double, stock: Int) {
+        if (id.isNullOrEmpty()) {
+            // Alta de un nuevo producto generando un ID único provisorio
+            val nuevoId = (listaProductos.size + 1).toString()
+            val nuevoProducto = Producto(
+                id = nuevoId,
+                nombre = nombre,
+                descripcion = descripcion,
+                precio = precio,
+                stock = stock,
+                imagenResId = 0
+            )
+            listaProductos = listaProductos + nuevoProducto
+        } else {
+            // Modificación de un producto existente
+            listaProductos = listaProductos.map { producto ->
+                if (producto.id == id) {
+                    producto.copy(
+                        nombre = nombre,
+                        descripcion = descripcion,
+                        precio = precio,
+                        stock = stock
+                    )
                 } else {
-                    it
+                    producto
                 }
             }
-        } else {
-            // Si no existe, lo sumamos a la lista con cantidad 1
-            carrito = carrito + ItemCarrito(producto = producto, cantidad = 1)
         }
-    } // Fin de agregarAlCarrito
+    } // Fin de guardarProducto
 
     /**
-     * Incrementa la cantidad de un producto en el carrito.
+     * BAJA de un producto por su ID (Eliminar).
      */
-    fun incrementarCantidad(item: ItemCarrito) {
-        carrito = carrito.map {
-            if (it.producto.id == item.producto.id) {
-                it.copy(cantidad = it.cantidad + 1)
-            } else {
-                it
-            }
-        }
-    } // Fin de incrementarCantidad
-
-    /**
-     * Decrementa la cantidad de un producto o lo elimina si llega a cero.
-     */
-    fun decrementarCantidad(item: ItemCarrito) {
-        if (item.cantidad > 1) {
-            carrito = carrito.map {
-                if (it.producto.id == item.producto.id) {
-                    it.copy(cantidad = it.cantidad - 1) // <- Arreglado el operador -
-                } else {
-                    it
-                }
-            }
-        } else {
-            // Si la cantidad es 1 y decrementa, se remueve del carrito
-            carrito = carrito.filter { it.producto.id != item.producto.id }
-        }
-    } // Fin de decrementarCantidad
-
-    /**
-     * Elimina por completo un ítem del carrito.
-     */
-    fun eliminarDelCarrito(item: ItemCarrito) {
-        carrito = carrito.filter { it.producto.id != item.producto.id }
-    } // Fin de eliminarDelCarrito
-
-    /**
-     * Actualiza el medio de pago seleccionado.
-     */
-    fun seleccionarMedioPago(medio: String) {
-        medioPagoSeleccionado = medio
-    } // Fin de seleccionarMedioPago
-
-    /**
-     * Valida que el carrito tenga elementos para poder cobrar.
-     */
-    fun finalizarVenta(): Boolean {
-        return carrito.isNotEmpty()
-    }
-
-    /**
-     * Vaciado final del carrito que se invoca de forma segura.
-     */
-    fun limpiarCarritoDespuesDeCompra() {
-        carrito = emptyList()
-    }
-
-
-
+    fun eliminarProducto(id: String) {
+        listaProductos = listaProductos.filter { it.id != id }
+    } // Fin de eliminarProducto
 
 } // Fin de ProductosViewModel

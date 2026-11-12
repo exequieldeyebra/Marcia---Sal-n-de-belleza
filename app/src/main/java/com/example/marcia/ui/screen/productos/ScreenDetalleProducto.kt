@@ -5,7 +5,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -13,14 +12,14 @@ import androidx.compose.ui.unit.sp
 import com.example.marcia.data.Producto
 
 /**
- * Pantalla de detalle de un producto individual con diseño moderno y minimalista.
+ * Pantalla de detalle / ficha técnica de un producto para el panel de administración.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetalleProductoScreen(
     producto: Producto,
     onVolverClick: () -> Unit,
-    onAgregarAlCarrito: () -> Unit,
+    onEditarClick: () -> Unit, // Cambiamos el callback de carrito por el de edición
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -28,7 +27,7 @@ fun DetalleProductoScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Detalle del Producto 📦",
+                        text = "Detalle del Producto 📋",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -96,13 +95,13 @@ fun DetalleProductoScreen(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "Stock disponible",
+                            text = "Stock disponible en inventario",
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "${producto.stock} unidades en el salón",
+                            text = "${producto.stock} unidades",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -112,7 +111,7 @@ fun DetalleProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Descripción conceptual del producto
+                // Descripción real del producto cargada en el ABML
                 Text(
                     text = "Descripción",
                     fontWeight = FontWeight.Bold,
@@ -121,7 +120,7 @@ fun DetalleProductoScreen(
                 )
 
                 Text(
-                    text = "Producto profesional seleccionado para el cuidado y tratamiento capilar en el salón de belleza Marcia. Ideal para aplicación en servicios o venta directa.",
+                    text = producto.descripcion.ifBlank { "Sin descripción detallada registrada para este artículo." },
                     fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 22.sp
@@ -129,16 +128,16 @@ fun DetalleProductoScreen(
 
             }
 
-            // Botón inferior grande y cómodo para sumar el producto al carrito
+            // Botón inferior para pasar a editar el producto
             Button(
-                onClick = onAgregarAlCarrito,
+                onClick = onEditarClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
-                    text = "Agregar al Carrito 🛒",
+                    text = "Editar Producto ✏️",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -154,6 +153,7 @@ fun DetalleProductoScreenPreview() {
     val productoPrueba = Producto(
         id = "1",
         nombre = "Shampoo Especial Profesional",
+        descripcion = "Tratamiento capilar nutritivo de uso profesional ideal para salón.",
         precio = 12500.0,
         stock = 10,
         imagenResId = 0
@@ -162,6 +162,6 @@ fun DetalleProductoScreenPreview() {
     DetalleProductoScreen(
         producto = productoPrueba,
         onVolverClick = {},
-        onAgregarAlCarrito = {}
+        onEditarClick = {}
     )
 }

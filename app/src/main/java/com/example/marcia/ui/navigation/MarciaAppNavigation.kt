@@ -35,29 +35,30 @@ import com.example.marcia.ui.screen.FinanzasScreen
 import com.example.marcia.ui.screen.LoginScreen
 import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
-import com.example.marcia.ui.screen.productos.CarritoScreen
-import com.example.marcia.ui.screen.productos.CompraConfirmadaScreen
 import com.example.marcia.ui.screen.productos.DetalleProductoScreen
-import com.example.marcia.ui.screen.productos.ProductosScreen
+import com.example.marcia.ui.screen.productos.FormularioProductoScreen
+import com.example.marcia.ui.screen.productos.ProductosAdminScreen
 import com.example.marcia.ui.viewmodel.ProductosViewModel
 
 /**
- * Componente principal que coordina la navegación tipada (Navigation 3),
- * el diseño del Scaffold global y la barra de navegación inferior del salón de belleza.
+ * Componente raíz de la aplicación.
+ * Coordina la navegación tipada (Navigation 3), el Scaffold principal
+ * y la visibilidad dinámica de la barra de navegación inferior.
  */
 @Composable
 fun MarciaSalonApp(
     backStack: NavBackStack<NavKey> = rememberNavBackStack(EmpleadosRoute)
 ) {
-    // ViewModel para la autenticación de usuarios
+    // ViewModel encargado de la sesión y validación de acceso
     val loginViewModel: LoginViewModel = viewModel()
 
-    // ViewModel compartido para gestionar todo el flujo de productos, stock y carrito
+    // ViewModel único y compartido para gestionar el estado del ABML de productos
     val productosViewModel: ProductosViewModel = viewModel()
 
+    // Obtenemos la pantalla actual en el tope de la pila de navegación
     val currentDestination = backStack.lastOrNull()
 
-    // Validamos si la ruta actual pertenece a las pantallas principales para mostrar la barra inferior
+    // Determinamos si se debe mostrar la barra inferior (solo en las secciones principales)
     val showBottomBar by remember(currentDestination) {
         derivedStateOf {
             TOP_LEVEL_DESTINATIONS.any { topLevel ->
@@ -85,7 +86,7 @@ fun MarciaSalonApp(
         }
     ) { innerPadding ->
 
-        // Contenedor principal de navegación tipada
+        // Contenedor principal que resuelve qué pantalla dibujar según la ruta activa
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
@@ -94,7 +95,7 @@ fun MarciaSalonApp(
                 .padding(innerPadding),
             entryProvider = entryProvider {
 
-                // Ruta de Login inicial
+                // Pantalla inicial de inicio de sesión
                 entry<LoginRoute> {
                     LoginScreen(
                         loginViewModel = loginViewModel,
@@ -105,44 +106,46 @@ fun MarciaSalonApp(
                     )
                 }
 
-                // Tab 1: Turnos (Agenda)
+                // Sección 1: Agenda de Turnos
                 entry<TurnosRoute> {
                     TurnosScreen()
                 }
 
-                // Tab 2: Servicios
+                // Sección 2: Catálogo de Servicios
                 entry<ServiciosRoute> {
                     ServiciosScreen()
                 }
 
-                // Tab 3: Empleados
+                // Sección 3: Gestión de Empleados
                 entry<EmpleadosRoute> {
                     EmpleadosScreen()
                 }
 
-                // Tab 4: Finanzas
+                // Sección 4: Control Financiero
                 entry<FinanzasRoute> {
                     FinanzasScreen()
                 }
 
                 // ========================================================
-                // MÓDULO DE PRODUCTOS Y VENTAS 🛍️
+                // MÓDULO DE ADMINISTRACIÓN DE PRODUCTOS (ABML) 📦
                 // ========================================================
 
-                // Pantalla Principal / Catálogo de Productos
+                // 1. LISTADO Y BAJA: Pantalla principal del inventario
                 entry<ProductosRoute> {
-                    ProductosScreen(
+                    ProductosAdminScreen(
                         viewModel = productosViewModel,
-                        onProductoClick = { productoId ->
-                            backStack.add(DetalleProductoRoute(productoId = productoId))
+                        onNuevoProductoClick = {
+                            // Navega al formulario vacío para crear un producto (ALTA)
+                            backStack.add(FormularioProductoRoute(productoId = null))
                         },
-                        onIrAlCarritoClick = {
-                            backStack.add(CarritoRoute)
+                        onEditarProductoClick = { productoId ->
+                            // Navega al formulario pasando el ID para editarlo (MODIFICACIÓN)
+                            backStack.add(FormularioProductoRoute(productoId = productoId))
                         }
                     )
                 }
 
-                // Pantalla de Detalle de un Producto individual
+                // 2. FICHA TÉCNICA: Vista detallada del producto
                 entry<DetalleProductoRoute> { key ->
                     val productoEncontrado = productosViewModel.listaProductos.find { it.id == key.productoId }
 
@@ -150,40 +153,36 @@ fun MarciaSalonApp(
                         DetalleProductoScreen(
                             producto = productoEncontrado,
                             onVolverClick = { backStack.removeLastOrNull() },
-                            onAgregarAlCarrito = {
-                                productosViewModel.agregarAlCarrito(productoEncontrado)
-                                backStack.removeLastOrNull()
+                            onEditarClick = {
+                                // Permite saltar directo a la edición desde la vista de detalle
+                                backStack.add(FormularioProductoRoute(productoId = productoEncontrado.id))
                             }
                         )
                     }
                 }
 
-                // Pantalla de Carrito de Compras y Cobro
-                entry<CarritoRoute> {
-                    CarritoScreen(
-                        viewModel = productosViewModel,
-                        onVolverClick = { backStack.removeLastOrNull() },
-                        onVentaExitosa = {
-                            val totalCobrado = productosViewModel.totalVenta
-                            val medioPagoUsado = productosViewModel.medioPagoSeleccionado
+                // 3. ALTA Y MODIFICACIÓN: Formulario con los 4 campos requeridos
+                entry<FormularioProductoRoute> { key ->
+                    // Si viene un ID buscamos el producto en memoria; si es null queda vacío para crear
+                    val productoAEditar = key.productoId?.let { id ->
+                        productosViewModel.listaProductos.find { it.id == id }
+                    }
 
-                            // Al llamar a finalizarVenta(), se valida, se limpia el carrito y avanza
-                            if (productosViewModel.finalizarVenta()) {
-                                backStack.add(CompraConfirmadaRoute(total = totalCobrado, medioPago = medioPagoUsado))
-                            }
-                        }
-                    )
-                }
-
-                // Pantalla de Confirmación de Venta Exitosa
-                entry<CompraConfirmadaRoute> { key ->
-                    CompraConfirmadaScreen(
-                        totalCobrado = key.total,
-                        medioPago = key.medioPago,
-                        onVolverAlCatalogo = {
-                            backStack.clear()
-                            backStack.add(ProductosRoute)
-                        }
+                    FormularioProductoScreen(
+                        productoExistente = productoAEditar,
+                        onGuardarClick = { nombre, descripcion, precio, stock ->
+                            // Ejecuta el guardado en el ViewModel (crea o actualiza según corresponda)
+                            productosViewModel.guardarProducto(
+                                id = key.productoId,
+                                nombre = nombre,
+                                descripcion = descripcion,
+                                precio = precio,
+                                stock = stock
+                            )
+                            // Vuelve automáticamente al listado tras guardar
+                            backStack.removeLastOrNull()
+                        },
+                        onVolverClick = { backStack.removeLastOrNull() }
                     )
                 }
 
@@ -193,7 +192,8 @@ fun MarciaSalonApp(
 }
 
 /**
- * Componente de la barra de navegación inferior (Bottom Bar).
+ * Barra de navegación inferior estilizada con Material 3.
+ * Permite alternar entre las secciones principales limpiando el historial intermedio.
  */
 @Composable
 fun MarciaBottomNavBar(

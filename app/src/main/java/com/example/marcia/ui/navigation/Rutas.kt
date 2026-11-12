@@ -4,26 +4,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 /**
- * Type-safe serializable navigation routes for Jetpack Compose Navigation 3.
+ * Rutas tipadas y serializables para Jetpack Compose Navigation 3.
+ * Centraliza todos los destinos de la aplicación del salón de belleza.
  */
 sealed interface ScreenRoute : NavKey
 
 @Serializable
 data object LoginRoute : ScreenRoute
 
-// Primary Bottom Navigation Destinations
+// ========================================================
+// DESTINOS PRINCIPALES (BARRA DE NAVEGACIÓN INFERIOR)
+// ========================================================
+
 @Serializable
 data object TurnosRoute : ScreenRoute
 
@@ -39,10 +43,16 @@ data object RegistroEmpleadoRoute : ScreenRoute
 @Serializable
 data object FinanzasRoute : ScreenRoute
 
+/**
+ * Ruta principal para el panel de administración (ABML) de productos e inventario.
+ */
 @Serializable
-data object ProductosRoute : ScreenRoute // <- Ruta principal para el catálogo de productos
+data object ProductosRoute : ScreenRoute
 
-// Secondary / Workflow Destinations with serializable arguments
+// ========================================================
+// DESTINOS SECUNDARIOS / FLUJOS INTERNOS CON ARGUMENTOS
+// ========================================================
+
 @Serializable
 data class DetalleTurnoRoute(val appointmentId: String) : ScreenRoute
 
@@ -55,18 +65,28 @@ data class DetalleServicioRoute(val serviceId: String) : ScreenRoute
 @Serializable
 data class DetalleEmpleadoRoute(val employeeId: String) : ScreenRoute
 
-// Rutas secundarias para el flujo completo de Productos
+// --- Rutas del módulo de Productos (ABML) ---
+
+/**
+ * Ruta para visualizar la ficha técnica completa de un producto.
+ */
 @Serializable
 data class DetalleProductoRoute(val productoId: String) : ScreenRoute
 
+/**
+ * Ruta para el formulario de Alta y Modificación de productos.
+ * - Si [productoId] es null: Abre el formulario vacío para crear un producto nuevo (Alta).
+ * - Si [productoId] contiene un ID: Carga los datos existentes para editarlo (Modificación).
+ */
 @Serializable
-data object CarritoRoute : ScreenRoute
+data class FormularioProductoRoute(val productoId: String? = null) : ScreenRoute
 
-@Serializable
-data class CompraConfirmadaRoute(val total: Double, val medioPago: String) : ScreenRoute
+// ========================================================
+// CONFIGURACIÓN DE LA BARRA DE NAVEGACIÓN INFERIOR
+// ========================================================
 
 /**
- * Representation of top-level destinations shown in the bottom navigation bar.
+ * Representación de cada pestaña principal mostrada en la barra de navegación inferior.
  */
 data class TopLevelDestination(
     val route: NavKey,
@@ -99,9 +119,10 @@ val TOP_LEVEL_DESTINATIONS = listOf(
         testTag = "nav_tab_empleados"
     ),
     TopLevelDestination(
-        route = ProductosRoute, // <- Agregado al Bottom Bar de la app
-        selectedIcon = Icons.Filled.ShoppingCart,
-        unselectedIcon = Icons.Outlined.ShoppingCart,
+        route = ProductosRoute,
+        // Cambiamos el ícono del carrito por una caja de inventario acorde al ABML
+        selectedIcon = Icons.Filled.Inventory2,
+        unselectedIcon = Icons.Outlined.Inventory2,
         label = "Productos",
         testTag = "nav_tab_productos"
     ),
