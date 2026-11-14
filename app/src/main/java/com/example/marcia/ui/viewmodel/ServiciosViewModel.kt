@@ -1,39 +1,37 @@
 package com.example.marcia.ui.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.marcia.data.Servicio
+import com.example.marcia.data.local.AppDatabase
+import com.example.marcia.data.local.ServicioDao
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class ServiciosViewModel : ViewModel() {
+class ServiciosViewModel(private val servicioDao: ServicioDao) : ViewModel() {
 
-    var servicios = mutableStateListOf<Servicio>()
-        private set
+    // Convierte el Flow de Room en un StateFlow observable por Compose
+    val servicios: StateFlow<List<Servicio>> = servicioDao.obtenerTodos()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
-    // Estado reactivo para el formulario (Crear/Editar)
-    private val _state = MutableStateFlow(Servicio(id = 0, nombre = "", precio = "", duracion = "60 minutos", descripcion = "", categoria = "Faciales", personal = ""))
+    private val _state = MutableStateFlow(
+        Servicio(nombre = "", precio = "", duracion = "60 minutos", descripcion = "", categoria = "Faciales")
+    )
     val state: StateFlow<Servicio> = _state.asStateFlow()
 
-    init {
-        cargarServicios()
-    }
-
-    private fun cargarServicios() {
-        if (servicios.isEmpty()) {
-            servicios.addAll(
-                listOf(
-                    Servicio(1, "Tratamiento Facial Glow", "28500", "60 minutos", "Protocolo biorevitalizante...", "Faciales", "Dra. Elena S., Mariana R."),
-                    Servicio(2, "Drenaje Linfático Manual", "22000", "90 minutos", "Técnica especializada...", "Corporales", "Lic. Sofía V."),
-                    Servicio(3, "Peeling Químico Renovador", "25000", "50 minutos", "Exfoliación profunda...", "Faciales", "Dra. Elena S.")
-                )
-            )
-        }
-    }
-
-    // Actualizadores de estado desde la UI
     fun onNombreChange(v: String) { _state.update { it.copy(nombre = v) } }
     fun onPrecioChange(v: String) { _state.update { it.copy(precio = v) } }
     fun onDuracionChange(v: String) { _state.update { it.copy(duracion = v) } }
@@ -41,7 +39,7 @@ class ServiciosViewModel : ViewModel() {
     fun onDescripcionChange(v: String) { _state.update { it.copy(descripcion = v) } }
 
     fun prepararNuevoRegistro() {
-        _state.value = Servicio(id = 0, nombre = "", precio = "", duracion = "60 minutos", descripcion = "", categoria = "Faciales", personal = "")
+        _state.value = Servicio(id = 0, nombre = "", precio = "", duracion = "60 minutos", descripcion = "", categoria = "Faciales")
     }
 
     fun seleccionarServicioParaEdicion(servicio: Servicio) {
@@ -49,22 +47,35 @@ class ServiciosViewModel : ViewModel() {
     }
 
     fun guardarNuevoServicio() {
-        val nuevoId = (servicios.maxOfOrNull { it.id } ?: 0) + 1
-        val nuevoServicio = _state.value.copy(id = nuevoId)
-        servicios.add(nuevoServicio)
-        prepararNuevoRegistro()
+        val nuevoServicio = _state.value.copy(id = 0) // id = 0 fuerza el autogenerado en Room
+        viewModelScope.launch {
+            servicioDao.insertar(nuevoServicio)
+            prepararNuevoRegistro()
+        }
     }
 
     fun guardarEdicionServicio() {
-        val idEditando = _state.value.id
-        val index = servicios.indexOfFirst { it.id == idEditando }
-        if (index != -1) {
-            servicios[index] = _state.value.copy()
+        val servicioActualizado = _state.value.copy()
+        viewModelScope.launch {
+            servicioDao.actualizar(servicioActualizado)
+            prepararNuevoRegistro()
         }
-        prepararNuevoRegistro()
     }
 
     fun eliminarServicio(servicio: Servicio) {
-        servicios.remove(servicio)
+        viewModelScope.launch {
+            servicioDao.eliminar(servicio)
+        }
+    }
+
+    // Factory para inyectar el DAO automáticamente desde Compose
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = checkNotNull(this[APPLICATION_KEY])
+                val database = AppDatabase.getDatabase(application)
+                ServiciosViewModel(database.servicioDao())
+            }
+        }
     }
 }

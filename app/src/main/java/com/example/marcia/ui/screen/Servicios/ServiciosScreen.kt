@@ -24,25 +24,31 @@ import com.example.marcia.ui.viewmodel.ServiciosViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiciosScreen(
-    viewModel: ServiciosViewModel = viewModel()
+    viewModel: ServiciosViewModel = viewModel(factory = ServiciosViewModel.Factory) // Usa el Factory
 ) {
+    // Recolecta la lista reactiva desde Room
+    val listaServicios by viewModel.servicios.collectAsStateWithLifecycle()
+
     var categoriaSeleccionada by remember { mutableStateOf("Todos") }
     var mostrarModalRegistro by remember { mutableStateOf(false) }
     var servicioParaEditar by remember { mutableStateOf<Servicio?>(null) }
-
     // Nuevo estado para controlar el diálogo de confirmación
     var servicioParaEliminar by remember { mutableStateOf<Servicio?>(null) }
 
-    val serviciosFiltrados = remember(categoriaSeleccionada, viewModel.servicios.toList()) {
-        if (categoriaSeleccionada == "Todos") viewModel.servicios
-        else viewModel.servicios.filter { it.categoria == categoriaSeleccionada }
+    // Filtra sobre 'listaServicios'
+    val serviciosFiltrados = remember(categoriaSeleccionada, listaServicios) {
+        if (categoriaSeleccionada == "Todos") listaServicios
+        else listaServicios.filter { it.categoria == categoriaSeleccionada }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             item {
                 Text("CATÁLOGO ACTIVO", style = MaterialTheme.typography.labelMedium)
-                Text("${viewModel.servicios.size} tratamientos", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    "${listaServicios.size} tratamientos", // Usa listaServicios.size
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
