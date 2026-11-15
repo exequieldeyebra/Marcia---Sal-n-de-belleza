@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marcia.data.Servicio
 import com.example.marcia.ui.viewmodel.ServiciosViewModel
+import androidx.compose.runtime.saveable.rememberSaveable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,11 +30,11 @@ fun ServiciosScreen(
     // Recolecta la lista reactiva desde Room
     val listaServicios by viewModel.servicios.collectAsStateWithLifecycle()
 
-    var categoriaSeleccionada by remember { mutableStateOf("Todos") }
-    var mostrarModalRegistro by remember { mutableStateOf(false) }
-    var servicioParaEditar by remember { mutableStateOf<Servicio?>(null) }
-    // Nuevo estado para controlar el diálogo de confirmación
-    var servicioParaEliminar by remember { mutableStateOf<Servicio?>(null) }
+    // 1. Usamos rememberSaveable con tipos primitivos (String, Boolean, Int?)
+    var categoriaSeleccionada by rememberSaveable { mutableStateOf("Todos") }
+    var mostrarModalRegistro by rememberSaveable { mutableStateOf(false) }
+    var mostrarModalEdicion by rememberSaveable { mutableStateOf(false) }
+    var idServicioAEliminar by rememberSaveable { mutableStateOf<Int?>(null) }
 
     // Filtra sobre 'listaServicios'
     val serviciosFiltrados = remember(categoriaSeleccionada, listaServicios) {
@@ -68,11 +69,11 @@ fun ServiciosScreen(
                     servicio = servicio,
                     onEdit = {
                         viewModel.seleccionarServicioParaEdicion(servicio)
-                        servicioParaEditar = servicio
+                        mostrarModalEdicion = true // Activamos el Boolean
                     },
                     onDelete = {
                         // En lugar de borrar directamente, abrimos el diálogo de advertencia
-                        servicioParaEliminar = servicio
+                        idServicioAEliminar = servicio.id // Guardamos solo el ID (Int)
                     }
                 )
                 Spacer(modifier = Modifier.height(12.dp))
@@ -93,7 +94,7 @@ fun ServiciosScreen(
             modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         )
 
-        // Modal para CREAR
+        // Modal para CREAR (se mantiene abierto al girar)
         if (mostrarModalRegistro) {
             ModalBottomSheet(
                 onDismissRequest = { mostrarModalRegistro = false },
@@ -119,10 +120,10 @@ fun ServiciosScreen(
             }
         }
 
-        // Modal para EDITAR
-        if (servicioParaEditar != null) {
+        // Modal para EDITAR (se mantiene abierto con los datos cargados al girar)
+        if (mostrarModalEdicion) {
             ModalBottomSheet(
-                onDismissRequest = { servicioParaEditar = null },
+                onDismissRequest = { mostrarModalEdicion = false },
                 containerColor = MaterialTheme.colorScheme.surface,
                 scrimColor = Color.Black.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
@@ -139,17 +140,21 @@ fun ServiciosScreen(
                     onDescripcionChange = viewModel::onDescripcionChange,
                     onConfirmar = {
                         viewModel.guardarEdicionServicio()
-                        servicioParaEditar = null
+                        mostrarModalEdicion = false
                     },
-                    onDismiss = { servicioParaEditar = null }
+                    onDismiss = { mostrarModalEdicion = false }
                 )
             }
         }
 
-        // Diálogo de Confirmación para ELIMINAR
-        if (servicioParaEliminar != null) {
+        // Diálogo de Confirmación para ELIMINAR (buscamos el objeto por su ID)
+        val servicioAEliminar = remember(idServicioAEliminar, listaServicios) {
+            listaServicios.find { it.id == idServicioAEliminar }
+        }
+
+        if (servicioAEliminar != null) {
             AlertDialog(
-                onDismissRequest = { servicioParaEliminar = null },
+                onDismissRequest = { idServicioAEliminar = null },
                 containerColor = MaterialTheme.colorScheme.surface,
                 title = {
                     Text(
@@ -160,22 +165,22 @@ fun ServiciosScreen(
                 },
                 text = {
                     Text(
-                        "¿Estás seguro de que deseas eliminar '${servicioParaEliminar?.nombre}'? Esta acción no se puede deshacer.",
+                        "¿Estás seguro de que deseas eliminar '${servicioAEliminar.nombre}'? Esta acción no se puede deshacer.",
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            servicioParaEliminar?.let { viewModel.eliminarServicio(it) }
-                            servicioParaEliminar = null
+                            viewModel.eliminarServicio(servicioAEliminar)
+                            idServicioAEliminar = null
                         }
                     ) {
                         Text("Eliminar", color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { servicioParaEliminar = null }) {
+                    TextButton(onClick = { idServicioAEliminar = null }) {
                         Text("Cancelar", color = MaterialTheme.colorScheme.secondary)
                     }
                 }

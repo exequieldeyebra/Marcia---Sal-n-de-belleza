@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ServicioDao {
 
-    @Query("SELECT * FROM servicios ORDER BY id DESC")
+    @Query("SELECT * FROM servicios ORDER BY nombre COLLATE NOCASE ASC")
     fun obtenerTodos(): Flow<List<Servicio>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
