@@ -37,6 +37,8 @@ import com.example.marcia.ui.screen.ServiciosScreen
 import com.example.marcia.ui.screen.TurnosScreen
 import com.example.marcia.ui.screen.productos.ProductosAdminScreen
 import com.example.marcia.ui.viewmodel.ProductosViewModel
+import com.example.marcia.ui.screen.Finanzas.EstadisticasFinanzasScreen
+import com.example.marcia.ui.viewmodel.FinanzasViewModel
 
 /**
  * Componente raíz de la aplicación.
@@ -52,6 +54,9 @@ fun MarciaSalonApp(
 
     // ViewModel único y compartido para gestionar el estado reactivo del ABML de productos
     val productosViewModel: ProductosViewModel = viewModel()
+
+    // ViewModel para el módulo de Finanzas
+    val finanzasViewModel: FinanzasViewModel = viewModel(factory = FinanzasViewModel.Factory)
 
     // Obtenemos la pantalla actual en el tope de la pila de navegación
     val currentDestination = backStack.lastOrNull()
@@ -121,7 +126,12 @@ fun MarciaSalonApp(
 
                 // Sección 4: Control Financiero
                 entry<FinanzasRoute> {
-                    FinanzasScreen()
+                    FinanzasScreen(
+                        viewModel = finanzasViewModel,
+                        onNavigateToEstadisticas = {
+                            backStack.add(EstadisticasFinanzasRoute)
+                        }
+                    )
                 }
 
                 // ========================================================
@@ -133,6 +143,15 @@ fun MarciaSalonApp(
                 entry<ProductosRoute> {
                     ProductosAdminScreen(
                         viewModel = productosViewModel
+                    )
+                }
+
+                entry<EstadisticasFinanzasRoute> {
+                    EstadisticasFinanzasScreen(
+                        viewModel = finanzasViewModel,
+                        onNavigateBack = {
+                            backStack.removeLastOrNull()
+                        }
                     )
                 }
 

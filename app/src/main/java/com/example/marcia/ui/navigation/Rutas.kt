@@ -81,6 +81,9 @@ data class DetalleProductoRoute(val productoId: String) : ScreenRoute
 @Serializable
 data class FormularioProductoRoute(val productoId: String? = null) : ScreenRoute
 
+@Serializable
+data object EstadisticasFinanzasRoute : ScreenRoute
+
 // ========================================================
 // CONFIGURACIÓN DE LA BARRA DE NAVEGACIÓN INFERIOR
 // ========================================================
