@@ -1,59 +1,64 @@
 [versions]
-agp = "9.3.3"
-coreKtx = "1.19.1"
-junit = "4.13.2"
-junitVersion = "1.3.0"
-espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.11.0"
-activityCompose = "1.13.0"
-kotlin = "2.2.10"
-kotlinxSerializationJson = "1.8.0"
-composeBom = "2026.02.01"
-navigationCompose = "2.10.2"
-foundationLayout = "1.12.1"
+agp = "9.3.3" # Versión del plugin de Android Gradle[cite: 5]
+coreKtx = "1.19.1" # Extensiones de Kotlin para Android[cite: 5]
+junit = "4.13.2" # Librería de pruebas unitarias[cite: 5]
+junitVersion = "1.3.0" # Soporte de JUnit para pruebas instrumentadas[cite: 5]
+espressoCore = "3.7.0" # Pruebas de interfaz en Android[cite: 5]
+lifecycleRuntimeKtx = "2.11.0" # Ciclo de vida de componentes y corrutinas[cite: 5]
+activityCompose = "1.13.0" # Integración de Activity con Jetpack Compose[cite: 5]
+kotlin = "2.2.10" # Versión del compilador y lenguaje Kotlin[cite: 5]
+kotlinxSerializationJson = "1.8.0" # Serialización JSON[cite: 5]
+composeBom = "2026.02.01" # Bill of Materials para unificar versiones de Compose[cite: 5]
+navigationCompose = "2.10.2" # Navegación estándar en Compose[cite: 5]
+foundationLayout = "1.12.1" # Componentes base de layout en Compose[cite: 5]
 
-nav3Core = "1.2.0"
-lifecycleViewmodelNav3 = "2.12.0-alpha04"
-kotlinxSerializationCore = "1.9.0"
-material3AdaptiveNav3 = "1.4.0-alpha02"
-material3 = "1.4.0"
+# Versiones de Navigation 3 y Material 3[cite: 5]
+nav3Core = "1.2.0" # Núcleo de Navigation 3[cite: 5]
+lifecycleViewmodelNav3 = "2.12.0-alpha04" # Integración de ViewModel con Navigation 3[cite: 5]
+kotlinxSerializationCore = "1.9.0" # Serialización tipada para rutas[cite: 5]
+material3AdaptiveNav3 = "1.4.0-alpha02" # Layouts adaptativos para Navigation 3[cite: 5]
+material3 = "1.4.0" # Componentes visuales de Material Design 3[cite: 5]
 
+# Versiones para base de datos local Room y procesador KSP
+room = "2.7.0" # Versión de Room con soporte para Kotlin 2.x
+ksp = "2.2.10-2.0.2" # Procesador de anotaciones KSP compatible con Kotlin 2.2.10
 
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" } # Helpers KTX de AndroidX[cite: 5]
+junit = { group = "junit", name = "junit", version.ref = "junit" } # JUnit local[cite: 5]
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" } # JUnit instrumentado[cite: 5]
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" } # Espresso UI tests[cite: 5]
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" } # Lifecycle KTX[cite: 5]
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" } # Activity Compose[cite: 5]
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" } # BOM de Compose[cite: 5]
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" } # UI base de Compose[cite: 5]
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" } # Gráficos y colores en Compose[cite: 5]
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" } # Herramientas de inspección en IDE[cite: 5]
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" } # Soporte para @Preview[cite: 5]
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" } # Manifest para tests de UI[cite: 5]
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" } # Reglas de test para Compose[cite: 5]
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" } # Material 3 gestionado por el BOM[cite: 5]
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" } # Navegación Compose[cite: 5]
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" } # JSON serialization[cite: 5]
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" } # Foundation layout[cite: 5]
 
+# Librerías principales de Navigation 3[cite: 5]
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" } # Backstack y gestión de entradas[cite: 5]
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" } # Contenedor visual NavDisplay[cite: 5]
 
-# Core Navigation 3 libraries
-androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
-androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+# Librerías complementarias de Navigation 3 y Material 3[cite: 5]
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" } # ViewModels asociados a destinos[cite: 5]
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" } # Anotaciones de serialización[cite: 5]
+androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" } # Adaptabilidad en pantallas grandes[cite: 5]
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" } # Material 3 explícito[cite: 5]
 
-# Optional add-on libraries
-androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
-androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-
-
+# Librerías de Room (base de datos local SQLite)
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" } # Motor principal de Room en tiempo de ejecución
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" } # Extensiones de Kotlin con Flow y suspend functions
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" } # Generador de código de Room (se usa con ksp)
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
-
+android-application = { id = "com.android.application", version.ref = "agp" } # Plugin de aplicación Android[cite: 5]
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" } # Plugin del compilador de Compose[cite: 5]
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" } # Plugin de serialización de Kotlin[cite: 5]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" } # Plugin KSP para procesar anotaciones de Room
