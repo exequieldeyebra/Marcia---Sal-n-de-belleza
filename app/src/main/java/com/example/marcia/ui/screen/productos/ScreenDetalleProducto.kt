@@ -151,7 +151,7 @@ fun DetalleProductoScreen(
 @Composable
 fun DetalleProductoScreenPreview() {
     val productoPrueba = Producto(
-        id = "1",
+        id = 1,
         nombre = "Shampoo Especial Profesional",
         descripcion = "Tratamiento capilar nutritivo de uso profesional ideal para salón.",
         precio = 12500.0,

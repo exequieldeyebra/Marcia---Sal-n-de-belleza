@@ -27,6 +27,8 @@ import com.example.marcia.data.Producto
 @Composable
 fun FormularioProductoContent(
     productoState: Producto?,
+    precioTexto: String,
+    stockTexto: String,
     tituloPanel: String,
     iconoPanel: ImageVector? = null,
     onNombreChange: (String) -> Unit,
@@ -61,7 +63,12 @@ fun FormularioProductoContent(
                     contentAlignment = Alignment.Center
                 ) {
                     if (iconoPanel != null) {
-                        Icon(iconoPanel, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(20.dp))
+                        Icon(
+                            iconoPanel,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.size(20.dp)
+                        )
                     } else {
                         Text("📦", fontSize = 18.sp)
                     }
@@ -74,7 +81,11 @@ fun FormularioProductoContent(
                 )
             }
             IconButton(onClick = onDismiss) {
-                Icon(Icons.Default.Close, contentDescription = "Cerrar", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "Cerrar",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
@@ -82,7 +93,12 @@ fun FormularioProductoContent(
 
         // Campo: Nombre del producto
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("NOMBRE DEL PRODUCTO", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+            Text(
+                "NOMBRE DEL PRODUCTO",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
             TextField(
                 value = productoState?.nombre ?: "",
                 onValueChange = onNombreChange,
@@ -102,14 +118,19 @@ fun FormularioProductoContent(
         // Fila para Precio y Stock
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("PRECIO (ARS)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                Text(
+                    "PRECIO (ARS)",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Bold
+                )
                 TextField(
-                    value = if (productoState?.precio == 0.0) "" else productoState?.precio?.toString() ?: "",
+                    value = precioTexto,
                     onValueChange = onPrecioChange,
                     placeholder = { Text("12500", color = Color.Gray) },
                     singleLine = true,
                     leadingIcon = { Text("$", color = MaterialTheme.colorScheme.onSurfaceVariant) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
                     colors = TextFieldDefaults.colors(
@@ -122,9 +143,14 @@ fun FormularioProductoContent(
             }
 
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("STOCK (UNIDADES)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                Text(
+                    "STOCK (UNIDADES)",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Bold
+                )
                 TextField(
-                    value = if (productoState?.stock == 0) "" else productoState?.stock?.toString() ?: "",
+                    value = stockTexto,
                     onValueChange = onStockChange,
                     placeholder = { Text("10", color = Color.Gray) },
                     singleLine = true,
@@ -143,7 +169,12 @@ fun FormularioProductoContent(
 
         // Campo: Descripción
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("DESCRIPCIÓN", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+            Text(
+                "DESCRIPCIÓN",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
             TextField(
                 value = productoState?.descripcion ?: "",
                 onValueChange = onDescripcionChange,
@@ -174,7 +205,10 @@ fun FormularioProductoContent(
         // Botón Guardar
         Button(
             onClick = {
-                if (productoState?.nombre.isNullOrBlank() || productoState?.precio == null || productoState?.stock == null) {
+                val nombreValido = !productoState?.nombre.isNullOrBlank()
+                val precioValido = precioTexto.replace(",", ".").toDoubleOrNull() != null
+                val stockValido = stockTexto.toIntOrNull() != null
+                if (!nombreValido || !precioValido || !stockValido) {
                     errorMensaje = "Por favor, complete correctamente los campos obligatorios."
                 } else {
                     errorMensaje = ""

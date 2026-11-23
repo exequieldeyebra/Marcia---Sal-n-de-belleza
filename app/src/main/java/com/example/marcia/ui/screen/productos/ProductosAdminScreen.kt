@@ -13,11 +13,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,14 +25,17 @@ import com.example.marcia.ui.viewmodel.ProductosViewModel
 
 /**
  * Pantalla principal de administración (ABML) de productos del salón.
- * Muestra el inventario con nombre, descripción, precio y stock, gestionando
- * el Alta, Baja y Modificación mediante modales flotantes (ModalBottomSheet).
+ * Lee el inventario desde Room mediante StateFlow y gestiona Alta, Baja y Modificación
+ * mediante modales flotantes (ModalBottomSheet) y diálogo de confirmación.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductosAdminScreen(
     viewModel: ProductosViewModel = viewModel()
 ) {
+    // Observamos la lista reactiva proveniente de Room
+    val productos by viewModel.listaProductos.collectAsStateWithLifecycle()
+
     // Estados locales para controlar la apertura de los modales y el diálogo de baja
     var mostrarModalRegistro by remember { mutableStateOf(false) }
     var productoParaEditar by remember { mutableStateOf<Producto?>(null) }
@@ -55,7 +56,7 @@ fun ProductosAdminScreen(
                 Column {
                     Text(text = "INVENTARIO ACTIVO", style = MaterialTheme.typography.labelMedium)
                     Text(
-                        text = "${viewModel.listaProductos.size} productos",
+                        text = "${productos.size} productos",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -65,7 +66,7 @@ fun ProductosAdminScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Evaluamos si el inventario está vacío
-            if (viewModel.listaProductos.isEmpty()) {
+            if (productos.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -98,7 +99,7 @@ fun ProductosAdminScreen(
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
                     items(
-                        items = viewModel.listaProductos,
+                        items = productos,
                         key = { it.id }
                     ) { producto ->
                         AdminProductoItemCard(
@@ -141,6 +142,8 @@ fun ProductosAdminScreen(
                 val productoState by viewModel.productoEnEdicion.collectAsStateWithLifecycle()
                 FormularioProductoContent(
                     productoState = productoState,
+                    precioTexto = viewModel.precioTexto,
+                    stockTexto = viewModel.stockTexto,
                     tituloPanel = "Añadir Nuevo Producto",
                     onNombreChange = viewModel::onNombreChange,
                     onDescripcionChange = viewModel::onDescripcionChange,
@@ -166,6 +169,8 @@ fun ProductosAdminScreen(
                 val productoState by viewModel.productoEnEdicion.collectAsStateWithLifecycle()
                 FormularioProductoContent(
                     productoState = productoState,
+                    precioTexto = viewModel.precioTexto,
+                    stockTexto = viewModel.stockTexto,
                     tituloPanel = "Modificar Producto",
                     iconoPanel = Icons.Default.Inventory2,
                     onNombreChange = viewModel::onNombreChange,
@@ -241,7 +246,6 @@ fun AdminProductoItemCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Columna izquierda con toda la información del producto
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -263,7 +267,6 @@ fun AdminProductoItemCard(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Fila con Precio y etiqueta de Stock
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -300,7 +303,6 @@ fun AdminProductoItemCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Columna derecha con los botones de acción
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.End
@@ -325,14 +327,4 @@ fun AdminProductoItemCard(
             }
         }
     }
-}
-
-@Suppress("ViewModelConstructorInComposable")
-@Preview(showBackground = true)
-@Composable
-fun ProductosAdminScreenPreview() {
-    val viewModelPrueba = ProductosViewModel()
-    ProductosAdminScreen(
-        viewModel = viewModelPrueba
-    )
 }
