@@ -14,7 +14,7 @@ interface ApiServiceUsuario {
     suspend fun obtenerUsuario(@Path("id") userId: Int): Usuario
 
     // POST: Crea nuevo recurso enviando objeto JSON
-    @POST("api/v1/usuarios")
+    @POST("api/v1/auth/register")
     suspend fun crearUsuario(@Body usuario: Usuario): Response<Usuario>
 
     // PUT: Actualiza recurso existente
